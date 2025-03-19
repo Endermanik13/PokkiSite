@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -44,20 +45,24 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0; /* Увеличиваем z-index, чтобы частицы были видны */
+            z-index: 0;
         }
         .particle { 
             position: absolute; 
-            width: 8px; /* Увеличиваем размер частиц */
-            height: 8px; 
-            background: rgba(255, 255, 255, 0.6); /* Увеличиваем непрозрачность */
+            width: 10px; 
+            height: 10px; 
+            background: linear-gradient(45deg, #FF6BD6, #6B6BFF); 
             border-radius: 50%; 
-            animation: float 8s infinite ease-in-out; 
+            animation: float 8s infinite ease-in-out, rotate 5s infinite linear; 
         }
         @keyframes float { 
             0% { transform: translateY(0) translateX(0); } 
             50% { transform: translateY(-40px) translateX(15px); } 
             100% { transform: translateY(0) translateX(0); } 
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .logo-character {
             width: 40px;
@@ -83,7 +88,7 @@
             transition: background 0.3s ease;
         }
         .logo-character:hover .eye {
-            background: #FF6B6B; /* Меняем цвет глаз при наведении */
+            background: #FF6B6B;
         }
         .logo-character .eye.left { left: 10px; }
         .logo-character .eye.right { right: 10px; }
@@ -406,6 +411,31 @@
             50% { transform: translateY(-50px) translateX(20px); opacity: 0.8; }
             100% { transform: translateY(0) translateX(0); opacity: 0.5; }
         }
+        /* Плавные переходы между секциями */
+        section {
+            position: relative;
+            overflow: hidden;
+        }
+        section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C300,120 900,0 1200,120 L1200,0 L0,0 Z' fill='%231A1A1A'/%3E%3C/svg%3E") repeat-x;
+            background-size: 1200px 50px;
+        }
+        section::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,120 C300,0 900,120 1200,0 L1200,120 L0,120 Z' fill='%231A1A1A'/%3E%3C/svg%3E") repeat-x;
+            background-size: 1200px 50px;
+        }
         /* Уникальные фоновые эффекты для каждой секции */
         #home {
             position: relative;
@@ -415,11 +445,13 @@
             background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
         }
         #home .particle {
+            background: linear-gradient(45deg, #FFD700, #FF6BD6);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             animation: float 8s infinite ease-in-out, glowParticle 3s infinite alternate ease-in-out;
         }
         @keyframes glowParticle {
-            0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
-            100% { opacity: 0.6; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+            0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            100% { opacity: 0.8; box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
         }
         #pokki {
             position: relative;
@@ -429,10 +461,11 @@
             background: radial-gradient(circle at top left, rgba(160, 160, 160, 0.1) 0%, transparent 60%);
         }
         #pokki .particle {
-            width: 6px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.7);
-            animation: fallingStar 5s infinite linear;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #00CED1, #FF4500);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: fallingStar 5s infinite linear, rotate 3s infinite linear;
         }
         @keyframes fallingStar {
             0% { transform: translateY(-100vh) translateX(0); opacity: 0; }
@@ -448,12 +481,11 @@
             background: radial-gradient(circle at bottom right, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
         }
         #kotyara .particle {
-            width: 10px;
-            height: 10px;
-            background: transparent;
-            border: 2px solid rgba(255, 107, 107, 0.5);
-            border-radius: 50%;
-            animation: bubbleDrift 12s infinite ease-in-out;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(45deg, #FF69B4, #00FA9A);
+            clip-path: circle(50% at 50% 50%);
+            animation: bubbleDrift 12s infinite ease-in-out, rotate 4s infinite linear;
         }
         @keyframes bubbleDrift {
             0% { transform: translateY(100vh) translateX(0); opacity: 0.5; }
@@ -474,10 +506,11 @@
             background: radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%);
         }
         #gallery .particle {
-            width: 3px;
-            height: 3px;
-            background: rgba(52, 211, 153, 0.7);
-            animation: sparkle 3s infinite ease-in-out;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(45deg, #00FF7F, #FF00FF);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: sparkle 3s infinite ease-in-out, rotate 2s infinite linear;
         }
         @keyframes sparkle {
             0% { opacity: 0; transform: scale(0); }
@@ -492,10 +525,11 @@
             background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
         }
         .adventure-section .particle {
-            width: 50px;
-            height: 50px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
-            animation: mistWave 15s infinite linear;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #1E90FF, #FFD700);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: mistWave 15s infinite linear, rotate 5s infinite linear;
         }
         @keyframes mistWave {
             0% { transform: translateX(-100vw) translateY(0); opacity: 0.3; }
@@ -525,7 +559,7 @@
         </div>
     </nav>
 
-    <section id="home" class="min-h-screen flex items-center justify-center relative">
+    <section id="home" class="min-h-screen flex items-center justify-center relative" data-aos="fade-up">
         <div class="background-particles" id="particles-home"></div>
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
@@ -539,7 +573,7 @@
         </div>
     </section>
 
-    <section id="pokki" class="py-20">
+    <section id="pokki" class="py-20 relative" data-aos="fade-up">
         <div class="background-particles" id="particles-pokki"></div>
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16">Покки Ленд</h2>
@@ -596,7 +630,7 @@
         </div>
     </section>
 
-    <section id="kotyara" class="py-20">
+    <section id="kotyara" class="py-20 relative" data-aos="fade-up">
         <div class="background-particles" id="particles-kotyara"></div>
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
@@ -615,7 +649,7 @@
         </div>
     </section>
 
-    <section id="gallery" class="py-20">
+    <section id="gallery" class="py-20 relative" data-aos="fade-up">
         <div class="background-particles" id="particles-gallery"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-16">Галерея</h2>
@@ -623,7 +657,7 @@
         </div>
     </section>
 
-    <section class="py-20 text-center adventure-section">
+    <section class="py-20 text-center adventure-section relative" data-aos="fade-up">
         <div class="background-particles" id="particles-adventure"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold mb-8">Зайти в Discord-сервер?</h2>
@@ -656,7 +690,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Инициализация AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
         // Проверяем, загружен ли date-fns
         if (typeof format === 'undefined') {
             console.error('date-fns не загружен. Проверьте подключение к https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js');
@@ -734,7 +775,6 @@
             const modalImage = document.getElementById('modal-image');
 
             try {
-                // Используем абсолютный URL для images.json
                 const imagesJsonUrl = 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/images.json';
                 console.log('Попытка загрузки images.json с URL:', imagesJsonUrl);
                 const response = await fetch(imagesJsonUrl);
@@ -752,16 +792,16 @@
                 }
 
                 const now = new Date();
-                const newThreshold = 10 * 60 * 1000; // 10 минут в миллисекундах
+                const newThreshold = 365 * 24 * 60 * 60 * 1000; // 1 год в миллисекундах (для теста)
 
                 imageFiles.forEach((file, index) => {
-                    // Проверяем валидность даты
                     const uploadDate = new Date(file.date);
                     const isValidDate = !isNaN(uploadDate.getTime());
                     const timeDiff = isValidDate ? now - uploadDate : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматируем дату и время с помощью date-fns
+                    console.log(`Файл: ${file.url}, Дата: ${file.date}, Разница времени: ${timeDiff / 1000 / 60} минут, Новая: ${isNew}`);
+
                     let formattedDateTime = 'Неизвестная дата';
                     if (isValidDate) {
                         if (typeof format === 'undefined') {
@@ -779,7 +819,7 @@
 
                     const div = document.createElement('div');
                     div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
-                    div.style.animationDelay = `${index * 0.1}s`; // Задержка для последовательного появления
+                    div.style.animationDelay = `${index * 0.1}s`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDateTime}</div>
                         <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
