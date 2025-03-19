@@ -32,12 +32,67 @@
         .bounce { animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
-        .download-btn { opacity: 0; transition: opacity 0.3s ease; }
+        .gallery-item { position: relative; cursor: pointer; }
+        .download-btn {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: #34D399;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
         .gallery-item:hover .download-btn { opacity: 1; }
-        .discord-block { position: relative; background: #2A2A2A; border-radius: 12px; padding: 20px; overflow: hidden; }
-        .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
-        .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
-        .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
+        .download-btn i { color: #FFFFFF; font-size: 1.2rem; }
+        .date-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #2A2A2A, #4A4A4A);
+            color: #A0A0A0;
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            text-align: center;
+        }
+        .new-gif {
+            position: relative;
+            box-shadow: 0 0 15px rgba(242, 48, 40, 0.5);
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 15px rgba(242, 48, 40, 0.5); }
+            100% { box-shadow: 0 0 25px rgba(242, 48, 40, 0.8); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         .fancy-button {
             position: relative;
             display: inline-block;
@@ -76,28 +131,10 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        .date-strip {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, #2A2A2A, #4A4A4A);
-            color: #A0A0A0;
-            padding: 4px 8px;
-            font-size: 0.9rem;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            text-align: center;
-        }
-        .new-gif {
-            position: relative;
-            box-shadow: 0 0 15px rgba(242, 48, 40, 0.5);
-            animation: glow 1.5s infinite alternate;
-        }
-        @keyframes glow {
-            0% { box-shadow: 0 0 15px rgba(242, 48, 40, 0.5); }
-            100% { box-shadow: 0 0 25px rgba(242, 48, 40, 0.8); }
-        }
+        .discord-block { position: relative; background: #2A2A2A; border-radius: 12px; padding: 20px; overflow: hidden; }
+        .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
+        .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
+        .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
     </style>
 </head>
 <body class="bg-pokki">
@@ -182,6 +219,10 @@
         </a>
     </div>
 
+    <div id="image-modal" class="modal">
+        <img id="modal-image" src="" alt="Full Image">
+    </div>
+
     <script>
         // Генерация частиц
         function createParticles() {
@@ -224,6 +265,8 @@
         // Динамическая загрузка GIF-ок из корня main
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
             const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
             try {
                 const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
@@ -252,19 +295,45 @@
                     const isNew = timeDiff <= newThreshold;
 
                     // Форматирование даты (день, месяц, год)
-                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    const formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
+                    let formattedDate = 'Дата неизвестна';
+                    if (!isNaN(createdAt.getTime())) {
+                        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                        formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
+                    }
 
                     const div = document.createElement('div');
-                    div.className = `gallery-item relative rounded-lg overflow-hidden hover-scale ${isNew ? 'new-gif' : ''}`;
+                    div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
                         <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
-                        <a href="${file.download_url}" download="${file.name}" class="download-btn absolute inset-0 bg-download/80 flex items-center justify-center text-pokki font-bold rounded-lg">
-                            Скачать
-                        </a>
+                        <div class="download-btn">
+                            <i class="ri-download-line"></i>
+                        </div>
                     `;
+
+                    // Открытие модального окна при клике на картинку
+                    div.querySelector('img').addEventListener('click', () => {
+                        modalImage.src = file.download_url;
+                        modal.style.display = 'flex';
+                    });
+
+                    // Скачивание при клике на кнопку
+                    div.querySelector('.download-btn').addEventListener('click', (e) => {
+                        e.stopPropagation(); // Предотвращаем открытие модального окна
+                        const link = document.createElement('a');
+                        link.href = file.download_url;
+                        link.download = file.name;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+
                     galleryContainer.appendChild(div);
+                });
+
+                // Закрытие модального окна при клике на фон
+                modal.addEventListener('click', () => {
+                    modal.style.display = 'none';
                 });
             } catch (error) {
                 galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов</p>';
