@@ -609,6 +609,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
     <script>
+        // Проверяем, загружен ли date-fns
+        if (typeof format === 'undefined') {
+            console.error('date-fns не загружен. Проверьте подключение к https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js');
+        } else {
+            console.log('date-fns успешно загружен');
+        }
+
         // Генерация частиц для каждой секции
         function createParticles(containerId, count) {
             const container = document.getElementById(containerId);
@@ -689,7 +696,12 @@
                     // Форматируем дату с помощью date-fns
                     let formattedDate = 'Неизвестная дата';
                     if (isValidDate) {
-                        formattedDate = dateFns.format(uploadDate, 'dd.MM.yyyy');
+                        if (typeof format === 'undefined') {
+                            console.error('date-fns не доступен, используем стандартное форматирование даты');
+                            formattedDate = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                        } else {
+                            formattedDate = format(uploadDate, 'dd.MM.yyyy');
+                        }
                     } else {
                         console.warn('Invalid date for file:', file.url, 'Date:', file.date);
                     }
