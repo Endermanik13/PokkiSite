@@ -128,11 +128,15 @@
             position: relative; 
             cursor: pointer; 
             border: 2px solid transparent; 
-            transition: border 0.5s ease-in-out, transform 0.5s ease-in-out; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            transition: border 0.5s ease-in-out, transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out; 
+            background: #2A2A2A; 
         }
         .gallery-item:hover { 
             border: 2px solid #A0A0A0; 
             transform: scale(1.05); 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
         }
         .download-btn {
             position: absolute;
@@ -572,7 +576,7 @@
         <div class="background-particles" id="particles-gallery"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-16">Галерея</h2>
-            <div id="gallery-container" class="grid md:grid-cols-3 gap-8"></div>
+            <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
         </div>
     </section>
 
@@ -603,6 +607,7 @@
         <img id="modal-image" src="" alt="Full Image">
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
     <script>
         // Генерация частиц для каждой секции
         function createParticles(containerId, count) {
@@ -666,16 +671,22 @@
                 const newThreshold = 15 * 24 * 60 * 60 * 1000; // 15 дней в миллисекундах
 
                 imageFiles.forEach((file, index) => {
+                    // Проверяем валидность даты
                     const uploadDate = new Date(file.date);
-                    const timeDiff = now - uploadDate;
+                    const isValidDate = !isNaN(uploadDate.getTime());
+                    const timeDiff = isValidDate ? now - uploadDate : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматируем дату для отображения
-                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    const formattedDate = uploadDate.toLocaleDateString('ru-RU', dateOptions);
+                    // Форматируем дату с помощью date-fns
+                    let formattedDate = 'Неизвестная дата';
+                    if (isValidDate) {
+                        formattedDate = dateFns.format(uploadDate, 'dd.MM.yyyy');
+                    } else {
+                        console.warn('Invalid date for file:', file.url, 'Date:', file.date);
+                    }
 
                     const div = document.createElement('div');
-                    div.className = `gallery-item ${isNew ? 'new-gif' : ''}`;
+                    div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
                         <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
