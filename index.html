@@ -262,6 +262,24 @@
         }
         fetchDiscordData();
 
+        // Получение даты создания файла через историю коммитов
+        async function getFileCreationDate(owner, repo, path) {
+            const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
+            try {
+                const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                const commits = await response.json();
+                if (commits && commits.length > 0) {
+                    // Самый старый коммит — это дата создания файла
+                    const creationDate = commits[commits.length - 1].commit.committer.date;
+                    return new Date(creationDate);
+                }
+                return null;
+            } catch (error) {
+                console.error(`Ошибка получения даты для файла ${path}:`, error);
+                return null;
+            }
+        }
+
         // Динамическая загрузка GIF-ок из корня main
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
@@ -283,20 +301,31 @@
                     return;
                 }
 
-                // Сортировка по дате создания (created_at)
-                gifFiles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                // Получение дат создания для каждого файла
+                const filesWithDates = await Promise.all(
+                    gifFiles.map(async (file) => {
+                        const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
+                        return { ...file, createdAt };
+                    })
+                );
+
+                // Сортировка по дате создания (от новых к старым)
+                filesWithDates.sort((a, b) => {
+                    if (!a.createdAt || !b.createdAt) return 0;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
 
                 const now = new Date();
                 const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
 
-                gifFiles.forEach((file, index) => {
-                    const createdAt = new Date(file.created_at);
-                    const timeDiff = now - createdAt;
+                filesWithDates.forEach((file, index) => {
+                    const createdAt = file.createdAt;
+                    const timeDiff = createdAt ? now - createdAt : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
                     // Форматирование даты (день, месяц, год)
                     let formattedDate = 'Дата неизвестна';
-                    if (!isNaN(createdAt.getTime())) {
+                    if (createdAt && !isNaN(createdAt.getTime())) {
                         const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
                         formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
                     }
