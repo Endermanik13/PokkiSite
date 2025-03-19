@@ -1,0 +1,41 @@
+name: Update Image Gallery
+
+on:
+  push:
+    paths:
+      - '*.gif'
+      - '*.png'
+      - '*.jpg'
+
+jobs:
+  update-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Generate images.json
+        run: |
+          # Устанавливаем зависимости, если нужно
+          npm install -g @actions/github
+          # Создаем список файлов с правильными URL для GitHub Pages
+          node -e "
+            const fs = require('fs');
+            const files = fs.readdirSync('.')
+              .filter(f => /\.(gif|png|jpg)$/i.test(f))
+              .map(f => 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPOSITORY/main/' + f);
+            fs.writeFileSync('images.json', JSON.stringify(files, null, 2));
+          "
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add images.json
+          git commit -m "Update images.json with new gallery files" || echo "No changes to commit"
+          git push
