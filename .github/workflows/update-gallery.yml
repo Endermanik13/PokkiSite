@@ -28,7 +28,7 @@ jobs:
             const fs = require('fs');
             const files = fs.readdirSync('.')
               .filter(f => /\.(gif|png|jpg)$/i.test(f))
-              .map(f => 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPOSITORY/main/' + f);
+              .map(f => 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f + f);
             fs.writeFileSync('images.json', JSON.stringify(files, null, 2));
           "
 
