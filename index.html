@@ -239,7 +239,7 @@
 
     <section id="kotyara" class="py-20 bg-pokki">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
+            <h2 class="text-4xl font-bold mb-16 text-kotyara">Мяу` Музей для моих рисунков и мыслей, добро пожаловать</h2>
             <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg hover-scale">
                 <div class="flex justify-center mb-6">
                     <img id="kotyara-logo" class="w-16 h-16 rounded-lg" src="https://cdn4.cdn-telegram.org/file/rXiiX0PsfYoxwyPdnsax9pCuftEfU_yFyvOBDsMxdxoT8L0tvYNQB9qrRtv0_11jocVEZkubCDOdQWSt6bTInmfe7cqoqHPAbEoQDKXTNIGJ2mvlKvw0rEPMmQ2kZbZhTmZ4vzIWUwWs7A95AwtmRid6SE5iQBUx15JYWpGf2717PhERxsa0q91rayrkKIFwoBB6aOXb2CB-xYZ0Bo4O0f-6Wrh0UixUZ45JixDu347841bmdE2-dIppYV9BBXRy2mcKKT4c6K0heaTpSzb9-zyCM3k8p5whTJ4J2W3swSObZCN2tDhc7Luf07VvUORPNsc0KhoK7rHlrPNQUypwuQ.jpg" alt="Kotyara Logo">
@@ -320,78 +320,25 @@
         }
         fetchDiscordData();
 
-        // Получение даты создания файла через историю коммитов
-        async function getFileCreationDate(owner, repo, path) {
-            const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
-            try {
-                const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
-                }
-                const commits = await response.json();
-                if (commits && commits.length > 0) {
-                    const creationDate = commits[commits.length - 1].commit.committer.date;
-                    return new Date(creationDate);
-                }
-                return null;
-            } catch (error) {
-                console.error(`Ошибка получения даты для файла ${path}:`, error);
-                return null;
-            }
-        }
-
-        // Динамическая загрузка GIF-ок из корня main
+        // Динамическая загрузка файлов
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
-            const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
+            const isLocal = window.location.protocol === 'file:';
+            const supportedExtensions = ['.gif', '.png', '.jpg', '.jpeg', '.webp'];
 
-            try {
-                const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
-                }
-                const files = await response.json();
-
-                if (!Array.isArray(files)) {
-                    throw new Error('Ответ API не является массивом. Возможно, репозиторий недоступен или пуст.');
-                }
-
-                if (files.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
-                    return;
-                }
-
-                const gifFiles = files.filter(file => file.name.endsWith('.gif') && file.name !== 'README.md');
-                if (gifFiles.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
-                    return;
-                }
-
-                // Получение дат создания для каждого файла
-                const filesWithDates = await Promise.all(
-                    gifFiles.map(async (file) => {
-                        const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
-                        return { ...file, createdAt };
-                    })
-                );
-
-                // Сортировка по дате создания (от новых к старым)
-                filesWithDates.sort((a, b) => {
-                    if (!a.createdAt || !b.createdAt) return 0;
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                });
-
+            // Функция для отображения файлов
+            function displayFiles(files) {
+                galleryContainer.innerHTML = ''; // Очищаем галерею
                 const now = new Date();
                 const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
 
-                filesWithDates.forEach((file, index) => {
-                    const createdAt = file.createdAt;
+                files.forEach((file, index) => {
+                    const createdAt = file.createdAt || null;
                     const timeDiff = createdAt ? now - createdAt : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматирование даты (день, месяц, год)
                     let formattedDate = 'Дата неизвестна';
                     if (createdAt && !isNaN(createdAt.getTime())) {
                         const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -402,7 +349,7 @@
                     div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
-                        <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
+                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                         <div class="download-btn">
                             <i class="ri-download-line"></i>
                         </div>
@@ -410,15 +357,15 @@
 
                     // Открытие модального окна при клике на картинку
                     div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file.download_url;
+                        modalImage.src = file.url;
                         modal.style.display = 'flex';
                     });
 
                     // Скачивание при клике на кнопку
                     div.querySelector('.download-btn').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Предотвращаем открытие модального окна
+                        e.stopPropagation();
                         const link = document.createElement('a');
-                        link.href = file.download_url;
+                        link.href = file.url;
                         link.download = file.name;
                         document.body.appendChild(link);
                         link.click();
@@ -432,9 +379,58 @@
                 modal.addEventListener('click', () => {
                     modal.style.display = 'none';
                 });
-            } catch (error) {
-                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Ошибка загрузки файлов: ${error.message}</p>`;
-                console.error('Детали ошибки:', error);
+            }
+
+            if (isLocal) {
+                // Локальный режим: показываем сообщение
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Открой сайт через GitHub Pages, чтобы увидеть GIF-ки. Локально это не работает из-за ограничений браузера.</p>';
+            } else {
+                // Режим GitHub Pages: используем GitHub API
+                const repoOwner = 'Endermanik13'; // Замени на свой GitHub-username
+                const repoName = 'PokkiSite'; // Замени на имя своего репозитория
+                const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/`;
+
+                // Добавляем временную метку, чтобы избежать кэширования
+                const timestamp = new Date().getTime();
+                const urlWithNoCache = `${apiUrl}?t=${timestamp}`;
+
+                try {
+                    const response = await fetch(urlWithNoCache, {
+                        headers: {
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Ошибка GitHub API: ${response.status} ${response.statusText}`);
+                    }
+                    const files = await response.json();
+
+                    // Фильтруем только изображения
+                    const imageFiles = files.filter(file => {
+                        const ext = file.name.toLowerCase().split('.').pop();
+                        return supportedExtensions.includes(`.${ext}`);
+                    });
+
+                    // Формируем список файлов для отображения
+                    const filesToDisplay = imageFiles.map(file => {
+                        // Используем raw URL для загрузки файлов
+                        const rawUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${file.name}`;
+                        return {
+                            name: file.name,
+                            url: rawUrl,
+                            createdAt: file.createdAt ? new Date(file.createdAt) : null
+                        };
+                    });
+
+                    if (filesToDisplay.length > 0) {
+                        displayFiles(filesToDisplay);
+                    } else {
+                        galleryContainer.innerHTML = '<p class="text-center text-gray-400">В репозитории нет изображений</p>';
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки файлов через GitHub API:', error);
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов. Возможно, превышен лимит запросов GitHub API (60 в час).</p>';
+                }
             }
         }
         loadGallery();
