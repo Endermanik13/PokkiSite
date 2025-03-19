@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Покки Ленд</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pokki: '#1A1A1A',
+                        mystery: '#2A2A2A',
+                        kotyara: '#A0A0A0',
+                        accent: '#FFFFFF',
+                        download: '#34D399'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Roboto', sans-serif; margin: 0; background: #1A1A1A; color: #FFFFFF; }
+        .particle { position: absolute; width: 4px; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; animation: float 6s infinite; pointer-events: none; }
+        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0); } }
+        .pokki-eyes { animation: blink 3s infinite; }
+        @keyframes blink { 0%, 90%, 100% { opacity: 1; } 95% { opacity: 0; } }
+        .bounce { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
+        .download-btn { opacity: 0; transition: opacity 0.3s ease; }
+        .gallery-item:hover .download-btn { opacity: 1; }
+    </style>
+</head>
+<body class="bg-pokki">
+    <nav class="fixed w-full bg-pokki/95 backdrop-blur-sm z-50 border-b border-mystery">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-mystery rounded-full flex items-center justify-center">
+                    <div class="pokki-eyes w-6 h-6 relative">
+                        <div class="absolute w-1.5 h-1.5 bg-accent rounded-full left-1 top-1"></div>
+                        <div class="absolute w-1.5 h-1.5 bg-accent rounded-full right-1 top-1"></div>
+                        <div class="absolute w-2 h-1 bg-accent rounded-full bottom-1 left-1/2 -translate-x-1/2"></div>
+                    </div>
+                </div>
+                <span class="text-xl font-bold">Покки Ленд</span>
+            </div>
+            <div class="hidden md:flex gap-8">
+                <a href="#home" class="hover:text-kotyara transition-colors">Главная</a>
+                <a href="#pokki" class="hover:text-kotyara transition-colors">Покки</a>
+                <a href="#kotyara" class="hover:text-kotyara transition-colors">Котяра</a>
+                <a href="#gallery" class="hover:text-kotyara transition-colors">Галерея</a>
+            </div>
+            <div class="text-sm text-gray-500">Сезон 361</div>
+        </div>
+    </nav>
+
+    <section id="home" class="min-h-screen flex items-center justify-center relative" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A);">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
+            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Погрузитесь в таинственный мир Покки и уютную атмосферу Котяры.</p>
+            <a href="https://discord.gg/EbeQnuShft" target="_blank" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Исследовать</a>
+        </div>
+    </section>
+
+    <section id="pokki" class="py-20 bg-mystery">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">Загадка Покки</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="bg-pokki/50 p-8 rounded-lg hover-scale">
+                    <h3 class="text-2xl font-bold mb-4">Тайна Покки</h3>
+                    <p class="text-gray-400">Покки — тень с белыми глазами, скрывающая больше, чем кажется. Ищи подсказки!</p>
+                </div>
+                <div class="bg-pokki/50 p-8 rounded-lg hover-scale relative">
+                    <h3 class="text-2xl font-bold mb-4">Секреты</h3>
+                    <p class="text-gray-400">Наведи, чтобы узнать...</p>
+                    <div class="absolute top-4 right-4 text-kotyara" style="opacity: 0; transition: opacity 0.5s;">361?</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="kotyara" class="py-20 bg-pokki">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-16 text-kotyara">Мир Котяры</h2>
+            <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg">
+                <p class="text-xl mb-8 text-gray-400">Котяра — уютный спутник в мире тайн. Его тепло разгоняет мрак Покки.</p>
+                <a href="https://t.me/Kottyaraq" target="_blank" class="inline-block bg-kotyara text-pokki px-6 py-3 rounded-lg hover-scale">Найти Котяру</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="py-20 bg-mystery">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">Галерея</h2>
+            <div id="gallery-container" class="grid md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-pokki text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8">Готов к приключениям?</h2>
+            <a href="#kotyara" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Начать</a>
+        </div>
+    </section>
+
+    <footer class="bg-mystery py-8">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-gray-500">© 2025 Покки Ленд. Тайны и уют.</div>
+            <a href="https://t.me/Kottyaraq" target="_blank" class="text-kotyara hover:text-kotyara/80"><i class="ri-telegram-fill"></i> Telegram</a>
+        </div>
+    </footer>
+
+    <div class="fixed bottom-4 right-4 bounce">
+        <a href="https://t.me/Kottyaraq" target="_blank" class="w-12 h-12 bg-kotyara rounded-full flex items-center justify-center text-pokki hover-scale">
+            <i class="ri-telegram-fill ri-lg"></i>
+        </a>
+    </div>
+
+    <script>
+        // Генерация частиц
+        function createParticles() {
+            const container = document.querySelector('#home');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Динамическая загрузка GIF-ок из корня main
+        async function loadGallery() {
+            const galleryContainer = document.getElementById('gallery-container');
+            const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
+            try {
+                const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                const files = await response.json();
+
+                if (!files || files.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
+                    return;
+                }
+
+                const gifFiles = files.filter(file => file.name.endsWith('.gif') && file.name !== 'README.md');
+                if (gifFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
+                    return;
+                }
+
+                gifFiles.forEach((file, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item relative rounded-lg overflow-hidden hover-scale';
+                    div.innerHTML = `
+                        <img src="${file.download_url}" class="w-full h-64 object-cover" alt="Gartic ${index + 1}">
+                        <a href="${file.download_url}" download="${file.name}" class="download-btn absolute inset-0 bg-download/80 flex items-center justify-center text-pokki font-bold rounded-lg">
+                            Скачать
+                        </a>
+                    `;
+                    galleryContainer.appendChild(div);
+                });
+            } catch (error) {
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов</p>';
+                console.error('Ошибка:', error);
+            }
+        }
+        loadGallery();
+    </script>
+</body>
+</html>
