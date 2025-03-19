@@ -647,90 +647,48 @@
         }
         fetchDiscordData();
 
-        // Получение даты создания файла через историю коммитов
-        async function getFileCreationDate(owner, repo, path) {
-            const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
-            try {
-                const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                const commits = await response.json();
-                if (commits && commits.length > 0) {
-                    const creationDate = commits[commits.length - 1].commit.committer.date;
-                    return new Date(creationDate);
-                }
-                return null;
-            } catch (error) {
-                console.error(`Ошибка получения даты для файла ${path}:`, error);
-                return null;
-            }
-        }
-
-        // Динамическая загрузка GIF-ок из корня main
+        // Динамическая загрузка галереи из images.json
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
-            const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
+
             try {
-                const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                const files = await response.json();
+                const response = await fetch('./images.json');
+                const imageFiles = await response.json();
 
-                if (!files || files.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
+                if (!imageFiles || imageFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
                     return;
                 }
-
-                const gifFiles = files.filter(file => file.name.endsWith('.gif') && file.name !== 'README.md');
-                if (gifFiles.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
-                    return;
-                }
-
-                const filesWithDates = await Promise.all(
-                    gifFiles.map(async (file) => {
-                        const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
-                        return { ...file, createdAt };
-                    })
-                );
-
-                filesWithDates.sort((a, b) => {
-                    if (!a.createdAt || !b.createdAt) return 0;
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                });
 
                 const now = new Date();
-                const newThreshold = 15 * 60 * 1000;
+                const newThreshold = 15 * 24 * 60 * 60 * 1000; // 15 дней
 
-                filesWithDates.forEach((file, index) => {
-                    const createdAt = file.createdAt;
-                    const timeDiff = createdAt ? now - createdAt : Infinity;
-                    const isNew = timeDiff <= newThreshold;
-
-                    let formattedDate = 'Дата неизвестна';
-                    if (createdAt && !isNaN(createdAt.getTime())) {
-                        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                        formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
-                    }
+                imageFiles.forEach((file, index) => {
+                    const isNew = index === 0; // Первый файл считаем новым
+                    const formattedDate = 'Дата добавления неизвестна'; // Без серверной логики даты недоступны
 
                     const div = document.createElement('div');
                     div.className = `gallery-item ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
-                        <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
+                        <img src="${file}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                         <div class="download-btn">
                             <i class="ri-download-line"></i>
                         </div>
                     `;
 
                     div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file.download_url;
+                        modalImage.src = file;
                         modal.style.display = 'flex';
                     });
 
                     div.querySelector('.download-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const link = document.createElement('a');
-                        link.href = file.download_url;
-                        link.download = file.name;
+                        link.href = file;
+                        link.download = file.split('/').pop();
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
@@ -743,13 +701,8 @@
                     modal.style.display = 'none';
                 });
             } catch (error) {
-                galleryContainer.innerHTML = `
-                    <div class="error-block">
-                        <p>Произошла ошибка загрузки файлов: API Rate Limit Exceeded</p>
-                        <p>Проблемы связаны с ограничениями GitHub API (60 запросов в час для неавторизованных пользователей). Приносим извинения за неудобства!</p>
-                    </div>
-                `;
-                console.error('Ошибка:', error);
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки галереи. Проверьте наличие images.json</p>';
+                console.error('Ошибка загрузки галереи:', error);
             }
         }
         loadGallery();
