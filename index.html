@@ -135,49 +135,6 @@
         .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
         .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
         .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
-        .rules-block {
-            background: #2A2A2A;
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        .rules-block h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #A0A0A0;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        .rules-block ul {
-            list-style: none;
-            padding: 0;
-        }
-        .rules-block li {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            font-size: 1rem;
-            color: #FFFFFF;
-        }
-        .rules-block li i {
-            margin-right: 8px;
-            color: #F23028;
-            font-size: 1.2rem;
-        }
-        .rules-block .highlight {
-            background: linear-gradient(45deg, #FF6BD6, #6B6BFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
-        .rules-block .note {
-            margin-top: 16px;
-            font-style: italic;
-            color: #A0A0A0;
-            text-align: center;
-        }
     </style>
 </head>
 <body class="bg-pokki">
@@ -206,7 +163,7 @@
     <section id="home" class="min-h-screen flex items-center justify-center relative" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A);">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
-            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Кок</p>
+            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Погрузитесь в таинственный мир Покки и уютную атмосферу Котяры.</p>
             <a href="https://discord.gg/EbeQnuShft" target="_blank" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Исследовать</a>
         </div>
     </section>
@@ -216,35 +173,20 @@
             <h2 class="text-4xl font-bold mb-16">Загадка Покки</h2>
             <div id="discord-block" class="discord-block max-w-3xl mx-auto hover-scale">
                 <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
-                <div id="discord-server-name" class="server-name"></div>
+                <div id="discord-server-name" class="server-name">Покки Ленд</div>
                 <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
-            </div>
-            <div class="rules-block mt-16">
-                <h3>Правила Покки Ленда</h3>
-                <ul>
-                    <li><i class="ri-error-warning-line"></i> Спам ради Спама <span class="highlight">Запрещён</span> *</li>
-                    <li><i class="ri-error-warning-line"></i> NSFW контент в основных чатах <span class="highlight">Запрещён</span> * *</li>
-                    <li><i class="ri-error-warning-line"></i> Политика (не в шуточном ключе) не приветствуется, наказание варьируется * *</li>
-                    <li><i class="ri-error-warning-line"></i> Оскорбления разрешены, до перехода на личности (ИРЛ) *</li>
-                    <li><i class="ri-error-warning-line"></i> Удаление сообщений для манипуляции какого-либо вида <span class="highlight">~~ПОККИ ВСЕ ВИДИТ, ПОККИ ВСЕ ЗНАЕТ~~</span> * *</li>
-                    <li><i class="ri-error-warning-line"></i> Не Спамьте пингами * *</li>
-                    <li><i class="ri-error-warning-line"></i> Копирование людей (их аватарок/поведения/ников) для манипуляции <span class="highlight">Запрещается</span> * * *</li>
-                    <li><i class="ri-error-warning-line"></i> Если ваше сообщение удалили, пусть оно остается удалённым *</li>
-                </ul>
-                <p class="mt-4">Если есть вопросы/уточнения, задавайте их Админу в онлайне либо же мне. Админ вправе отказать в доступе любому участнику. Он не обязан указывать причины или предупреждать об этом.</p>
-                <p class="note">Прикол в том, что правила их никто особо не читает, т.к. все придерживаются нормам морали.</p>
             </div>
         </div>
     </section>
 
     <section id="kotyara" class="py-20 bg-pokki">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-16 text-kotyara">Мяу` Музей для моих рисунков и мыслей, добро пожаловать</h2>
+            <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
             <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg hover-scale">
                 <div class="flex justify-center mb-6">
                     <img id="kotyara-logo" class="w-16 h-16 rounded-lg" src="https://cdn4.cdn-telegram.org/file/rXiiX0PsfYoxwyPdnsax9pCuftEfU_yFyvOBDsMxdxoT8L0tvYNQB9qrRtv0_11jocVEZkubCDOdQWSt6bTInmfe7cqoqHPAbEoQDKXTNIGJ2mvlKvw0rEPMmQ2kZbZhTmZ4vzIWUwWs7A95AwtmRid6SE5iQBUx15JYWpGf2717PhERxsa0q91rayrkKIFwoBB6aOXb2CB-xYZ0Bo4O0f-6Wrh0UixUZ45JixDu347841bmdE2-dIppYV9BBXRy2mcKKT4c6K0heaTpSzb9-zyCM3k8p5whTJ4J2W3swSObZCN2tDhc7Luf07VvUORPNsc0KhoK7rHlrPNQUypwuQ.jpg" alt="Kotyara Logo">
                 </div>
-                <p class="text-xl mb-8 text-gray-400">Мяу` Музей для моих рисунков и мыслей, добро пожаловать</p>
+                <p class="text-xl mb-8 text-gray-400">Котяра — уютный спутник в мире тайн. Его тепло разгоняет мрак Покки.</p>
                 <a href="https://t.me/Kottyaraq" target="_blank" class="fancy-button">Найти Котяру</a>
             </div>
         </div>
@@ -295,143 +237,114 @@
         }
         createParticles();
 
-        // Получение данных о Discord сервере
-        async function fetchDiscordData() {
-            const inviteCode = 'EbeQnuShft';
-            const apiUrl = `https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`;
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://via.placeholder.com/80';
-                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://via.placeholder.com/600x200';
-                const serverName = data.guild.name || 'Покки Ленд';
-
-                document.getElementById('discord-logo').src = logoUrl;
-                document.getElementById('discord-server-name').textContent = serverName;
-                document.getElementById('discord-banner').src = bannerUrl;
-
-                document.getElementById('discord-block').addEventListener('click', () => {
-                    window.open('https://discord.gg/EbeQnuShft', '_blank');
-                });
-            } catch (error) {
-                console.error('Ошибка загрузки данных Discord:', error);
-            }
+        // Настройка блока Discord (статически)
+        function setupDiscordBlock() {
+            const discordBlock = document.getElementById('discord-block');
+            discordBlock.addEventListener('click', () => {
+                window.open('https://discord.gg/EbeQnuShft', '_blank');
+            });
         }
-        fetchDiscordData();
+        setupDiscordBlock();
 
-        // Динамическая загрузка файлов
+        // Извлечение даты из имени файла (формат: album-ГГГГ-ММ-ДД_ЧЧ-ММ-СС_1.gif)
+        function extractDateFromFilename(filename) {
+            const datePattern = /album-(\d{4})-(\d{2})-(\d{2})_/;
+            const match = filename.match(datePattern);
+            if (match) {
+                const date = new Date(`${match[1]}-${match[2]}-${match[3]}`);
+                if (!isNaN(date.getTime())) {
+                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    return date.toLocaleDateString('ru-RU', dateOptions);
+                }
+            }
+            return 'Дата неизвестна';
+        }
+
+        // Динамическая загрузка GIF-ок через files.json
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
-            const isLocal = window.location.protocol === 'file:';
-            const supportedExtensions = ['.gif', '.png', '.jpg', '.jpeg', '.webp'];
 
-            // Функция для отображения файлов
-            function displayFiles(files) {
-                galleryContainer.innerHTML = ''; // Очищаем галерею
-                const now = new Date();
-                const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
+            // Запасной список файлов для локального тестирования (на случай, если files.json еще не создан)
+            const fallbackFiles = [
+                { name: "album-2024-10-1_9-19-02-30_1.gif", path: "album-2024-10-1_9-19-02-30_1.gif" },
+                { name: "album-2025-02-2_14-57-49_1.gif", path: "album-2025-02-2_14-57-49_1.gif" }
+            ];
 
-                files.forEach((file, index) => {
-                    const createdAt = file.createdAt || null;
-                    const timeDiff = createdAt ? now - createdAt : Infinity;
-                    const isNew = timeDiff <= newThreshold;
+            let gifFiles = [];
 
-                    let formattedDate = 'Дата неизвестна';
-                    if (createdAt && !isNaN(createdAt.getTime())) {
-                        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                        formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
-                    }
-
-                    const div = document.createElement('div');
-                    div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
-                    div.innerHTML = `
-                        <div class="date-strip">${formattedDate}</div>
-                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
-                        <div class="download-btn">
-                            <i class="ri-download-line"></i>
-                        </div>
-                    `;
-
-                    // Открытие модального окна при клике на картинку
-                    div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file.url;
-                        modal.style.display = 'flex';
-                    });
-
-                    // Скачивание при клике на кнопку
-                    div.querySelector('.download-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const link = document.createElement('a');
-                        link.href = file.url;
-                        link.download = file.name;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    });
-
-                    galleryContainer.appendChild(div);
-                });
-
-                // Закрытие модального окна при клике на фон
-                modal.addEventListener('click', () => {
-                    modal.style.display = 'none';
-                });
-            }
-
-            if (isLocal) {
-                // Локальный режим: показываем сообщение
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Открой сайт через GitHub Pages, чтобы увидеть GIF-ки. Локально это не работает из-за ограничений браузера.</p>';
-            } else {
-                // Режим GitHub Pages: используем GitHub API
-                const repoOwner = 'Endermanik13'; // Замени на свой GitHub-username
-                const repoName = 'PokkiSite'; // Замени на имя своего репозитория
-                const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/`;
-
-                // Добавляем временную метку, чтобы избежать кэширования
-                const timestamp = new Date().getTime();
-                const urlWithNoCache = `${apiUrl}?t=${timestamp}`;
-
-                try {
-                    const response = await fetch(urlWithNoCache, {
-                        headers: {
-                            'Cache-Control': 'no-cache'
-                        }
-                    });
-                    if (!response.ok) {
-                        throw new Error(`Ошибка GitHub API: ${response.status} ${response.statusText}`);
-                    }
-                    const files = await response.json();
-
-                    // Фильтруем только изображения
-                    const imageFiles = files.filter(file => {
-                        const ext = file.name.toLowerCase().split('.').pop();
-                        return supportedExtensions.includes(`.${ext}`);
-                    });
-
-                    // Формируем список файлов для отображения
-                    const filesToDisplay = imageFiles.map(file => {
-                        // Используем raw URL для загрузки файлов
-                        const rawUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${file.name}`;
-                        return {
-                            name: file.name,
-                            url: rawUrl,
-                            createdAt: file.createdAt ? new Date(file.createdAt) : null
-                        };
-                    });
-
-                    if (filesToDisplay.length > 0) {
-                        displayFiles(filesToDisplay);
-                    } else {
-                        galleryContainer.innerHTML = '<p class="text-center text-gray-400">В репозитории нет изображений</p>';
-                    }
-                } catch (error) {
-                    console.error('Ошибка загрузки файлов через GitHub API:', error);
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов. Возможно, превышен лимит запросов GitHub API (60 в час).</p>';
+            try {
+                const response = await fetch('files.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ошибка: ${response.status}`);
                 }
+                gifFiles = await response.json();
+            } catch (error) {
+                console.error('Ошибка загрузки списка файлов:', error);
+                // Если files.json не удалось загрузить, используем запасной список
+                gifFiles = fallbackFiles;
+                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Используется запасной список файлов (ошибка загрузки files.json: ${error.message})</p>`;
             }
+
+            if (gifFiles.length === 0) {
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
+                return;
+            }
+
+            // Сортировка по имени файла (по дате в имени)
+            gifFiles.sort((a, b) => b.name.localeCompare(a.name));
+
+            const now = new Date();
+            const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
+
+            gifFiles.forEach((file, index) => {
+                // Извлечение даты из имени файла
+                const formattedDate = extractDateFromFilename(file.name);
+
+                // Для проверки "новых" GIF-ок
+                const fileDateMatch = file.name.match(/album-(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})/);
+                let isNew = false;
+                if (fileDateMatch) {
+                    const fileDate = new Date(`${fileDateMatch[1]}-${fileDateMatch[2]}-${fileDateMatch[3]}T${fileDateMatch[4]}:${fileDateMatch[5]}:${fileDateMatch[6]}`);
+                    const timeDiff = now - fileDate;
+                    isNew = timeDiff <= newThreshold;
+                }
+
+                const div = document.createElement('div');
+                div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
+                div.innerHTML = `
+                    <div class="date-strip">${formattedDate}</div>
+                    <img src="${file.path}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
+                    <div class="download-btn">
+                        <i class="ri-download-line"></i>
+                    </div>
+                `;
+
+                // Открытие модального окна при клике на картинку
+                div.querySelector('img').addEventListener('click', () => {
+                    modalImage.src = file.path;
+                    modal.style.display = 'flex';
+                });
+
+                // Скачивание при клике на кнопку
+                div.querySelector('.download-btn').addEventListener('click', (e) => {
+                    e.stopPropagation(); // Предотвращаем открытие модального окна
+                    const link = document.createElement('a');
+                    link.href = file.path;
+                    link.download = file.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+
+                galleryContainer.appendChild(div);
+            });
+
+            // Закрытие модального окна при клике на фон
+            modal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
         }
         loadGallery();
     </script>
