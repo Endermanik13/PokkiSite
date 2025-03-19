@@ -16,7 +16,8 @@
                         mystery: '#2A2A2A',
                         kotyara: '#A0A0A0',
                         accent: '#FFFFFF',
-                        download: '#34D399'
+                        download: '#34D399',
+                        newGlow: '#F23028'
                     }
                 }
             }
@@ -33,6 +34,70 @@
         .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
         .download-btn { opacity: 0; transition: opacity 0.3s ease; }
         .gallery-item:hover .download-btn { opacity: 1; }
+        .discord-block { position: relative; background: #2A2A2A; border-radius: 12px; padding: 20px; overflow: hidden; }
+        .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
+        .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
+        .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
+        .fancy-button {
+            position: relative;
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1A1A1A;
+            background: linear-gradient(45deg, #A0A0A0, #D3D3D3);
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(160, 160, 160, 0.3);
+            transition: all 0.3s ease;
+        }
+        .fancy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(160, 160, 160, 0.5);
+            background: linear-gradient(45deg, #D3D3D3, #A0A0A0);
+        }
+        .fancy-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, #FF6BD6, #6B6BFF, #FF6BD6);
+            background-size: 200%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            border-radius: 8px;
+        }
+        .fancy-button:hover::before {
+            opacity: 1;
+            animation: gradientShift 3s infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .date-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #2A2A2A, #4A4A4A);
+            color: #A0A0A0;
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            text-align: center;
+        }
+        .new-gif {
+            position: relative;
+            box-shadow: 0 0 15px rgba(242, 48, 40, 0.5);
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 15px rgba(242, 48, 40, 0.5); }
+            100% { box-shadow: 0 0 25px rgba(242, 48, 40, 0.8); }
+        }
     </style>
 </head>
 <body class="bg-pokki">
@@ -67,28 +132,25 @@
     </section>
 
     <section id="pokki" class="py-20 bg-mystery">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-16">Загадка Покки</h2>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div class="bg-pokki/50 p-8 rounded-lg hover-scale">
-                    <h3 class="text-2xl font-bold mb-4">Тайна Покки</h3>
-                    <p class="text-gray-400">Покки — тень с белыми глазами, скрывающая больше, чем кажется. Ищи подсказки!</p>
-                </div>
-                <div class="bg-pokki/50 p-8 rounded-lg hover-scale relative">
-                    <h3 class="text-2xl font-bold mb-4">Секреты</h3>
-                    <p class="text-gray-400">Наведи, чтобы узнать...</p>
-                    <div class="absolute top-4 right-4 text-kotyara" style="opacity: 0; transition: opacity 0.5s;">361?</div>
-                </div>
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-16">Загадка Покки</h2>
+            <div id="discord-block" class="discord-block max-w-3xl mx-auto hover-scale">
+                <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
+                <div id="discord-server-name" class="server-name"></div>
+                <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
             </div>
         </div>
     </section>
 
     <section id="kotyara" class="py-20 bg-pokki">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-16 text-kotyara">Мир Котяры</h2>
-            <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg">
+            <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
+            <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg hover-scale">
+                <div class="flex justify-center mb-6">
+                    <img id="kotyara-logo" class="w-16 h-16 rounded-lg" src="https://cdn4.cdn-telegram.org/file/rXiiX0PsfYoxwyPdnsax9pCuftEfU_yFyvOBDsMxdxoT8L0tvYNQB9qrRtv0_11jocVEZkubCDOdQWSt6bTInmfe7cqoqHPAbEoQDKXTNIGJ2mvlKvw0rEPMmQ2kZbZhTmZ4vzIWUwWs7A95AwtmRid6SE5iQBUx15JYWpGf2717PhERxsa0q91rayrkKIFwoBB6aOXb2CB-xYZ0Bo4O0f-6Wrh0UixUZ45JixDu347841bmdE2-dIppYV9BBXRy2mcKKT4c6K0heaTpSzb9-zyCM3k8p5whTJ4J2W3swSObZCN2tDhc7Luf07VvUORPNsc0KhoK7rHlrPNQUypwuQ.jpg" alt="Kotyara Logo">
+                </div>
                 <p class="text-xl mb-8 text-gray-400">Котяра — уютный спутник в мире тайн. Его тепло разгоняет мрак Покки.</p>
-                <a href="https://t.me/Kottyaraq" target="_blank" class="inline-block bg-kotyara text-pokki px-6 py-3 rounded-lg hover-scale">Найти Котяру</a>
+                <a href="https://t.me/Kottyaraq" target="_blank" class="fancy-button">Найти Котяру</a>
             </div>
         </div>
     </section>
@@ -134,6 +196,31 @@
         }
         createParticles();
 
+        // Получение данных о Discord сервере
+        async function fetchDiscordData() {
+            const inviteCode = 'EbeQnuShft';
+            const apiUrl = `https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://via.placeholder.com/80';
+                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://via.placeholder.com/600x200';
+                const serverName = data.guild.name || 'Покки Ленд';
+
+                document.getElementById('discord-logo').src = logoUrl;
+                document.getElementById('discord-server-name').textContent = serverName;
+                document.getElementById('discord-banner').src = bannerUrl;
+
+                document.getElementById('discord-block').addEventListener('click', () => {
+                    window.open('https://discord.gg/EbeQnuShft', '_blank');
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки данных Discord:', error);
+            }
+        }
+        fetchDiscordData();
+
         // Динамическая загрузка GIF-ок из корня main
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
@@ -153,11 +240,26 @@
                     return;
                 }
 
+                // Сортировка по дате создания (created_at)
+                gifFiles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                const now = new Date();
+                const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
+
                 gifFiles.forEach((file, index) => {
+                    const createdAt = new Date(file.created_at);
+                    const timeDiff = now - createdAt;
+                    const isNew = timeDiff <= newThreshold;
+
+                    // Форматирование даты (день, месяц, год)
+                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    const formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
+
                     const div = document.createElement('div');
-                    div.className = 'gallery-item relative rounded-lg overflow-hidden hover-scale';
+                    div.className = `gallery-item relative rounded-lg overflow-hidden hover-scale ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
-                        <img src="${file.download_url}" class="w-full h-64 object-cover" alt="Gartic ${index + 1}">
+                        <div class="date-strip">${formattedDate}</div>
+                        <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
                         <a href="${file.download_url}" download="${file.name}" class="download-btn absolute inset-0 bg-download/80 flex items-center justify-center text-pokki font-bold rounded-lg">
                             Скачать
                         </a>
