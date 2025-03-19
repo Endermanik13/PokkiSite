@@ -14,24 +14,63 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Используем GITHUB_TOKEN для доступа
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Generate images.json
+      - name: Generate images.json with dates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Устанавливаем зависимости
           npm install -g @actions/github
-          # Создаем список файлов с правильными URL для GitHub Pages
           node -e "
             const fs = require('fs');
-            const files = fs.readdirSync('.')
-              .filter(f => /\.(gif|png|jpg)$/i.test(f))
-              .map(f => 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f);
-            fs.writeFileSync('images.json', JSON.stringify(files, null, 2));
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+            async function getFileCreationDate(owner, repo, path) {
+              try {
+                const commits = await octokit.repos.listCommits({
+                  owner,
+                  repo,
+                  path,
+                  per_page: 1,
+                });
+                if (commits.data.length > 0) {
+                  return commits.data[0].commit.committer.date;
+                }
+                return new Date().toISOString();
+              } catch (error) {
+                console.error('Error fetching commit date for', path, error);
+                return new Date().toISOString();
+              }
+            }
+
+            (async () => {
+              const files = fs.readdirSync('.')
+                .filter(f => /\.(gif|png|jpg)$/i.test(f))
+                .map(f => ({
+                  url: 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f,
+                  name: f
+                }));
+
+              const filesWithDates = [];
+              for (const file of files) {
+                const date = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
+                filesWithDates.push({
+                  url: file.url,
+                  date: date
+                });
+              }
+
+              // Сортируем по дате (новые файлы сверху)
+              filesWithDates.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+              fs.writeFileSync('images.json', JSON.stringify(filesWithDates, null, 2));
+            })();
           "
 
       - name: Commit and push changes
@@ -39,5 +78,5 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add images.json
-          git commit -m "Update images.json with new gallery files" || echo "No changes to commit"
+          git commit -m "Update images.json with new gallery files and dates" || echo "No changes to commit"
           git push
