@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Покки Ленд</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231A1A1A'/%3E%3Crect x='8' y='8' width='4' height='4' fill='%23FFFFFF'/%3E%3Crect x='20' y='8' width='4' height='4' fill='%23FFFFFF'/%3E%3Crect x='12' y='20' width='8' height='4' fill='%23FFFFFF'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
@@ -17,22 +18,122 @@
                         kotyara: '#A0A0A0',
                         accent: '#FFFFFF',
                         download: '#34D399',
-                        newGlow: '#F23028'
+                        newGlow: '#F23028',
+                        warning: '#FF6B6B',
+                        rule1: '#FF6B6B',
+                        rule2: '#FFAA33',
+                        rule3: '#FF3333'
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Roboto', sans-serif; margin: 0; background: #1A1A1A; color: #FFFFFF; }
-        .particle { position: absolute; width: 4px; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; animation: float 6s infinite; pointer-events: none; }
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0); } }
-        .pokki-eyes { animation: blink 3s infinite; }
-        @keyframes blink { 0%, 90%, 100% { opacity: 1; } 95% { opacity: 0; } }
-        .bounce { animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
-        .gallery-item { position: relative; cursor: pointer; }
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            margin: 0; 
+            background: #1A1A1A; 
+            color: #FFFFFF; 
+            overflow-x: hidden; 
+            position: relative; 
+        }
+        .background-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle { 
+            position: absolute; 
+            width: 4px; 
+            height: 4px; 
+            background: rgba(255, 255, 255, 0.3); 
+            border-radius: 50%; 
+            animation: float 8s infinite ease-in-out; 
+        }
+        @keyframes float { 
+            0% { transform: translateY(0) translateX(0); } 
+            50% { transform: translateY(-40px) translateX(15px); } 
+            100% { transform: translateY(0) translateX(0); } 
+        }
+        .warning-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 107, 0.9);
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: slideDown 0.5s ease-in-out forwards;
+        }
+        .warning-message .close-btn {
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .warning-message .close-btn:hover {
+            transform: rotate(90deg);
+        }
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .logo-character {
+            width: 40px;
+            height: 40px;
+            background: #000000;
+            border-radius: 50%;
+            position: relative;
+        }
+        .logo-character .eye {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            top: 12px;
+        }
+        .logo-character .eye.left { left: 10px; }
+        .logo-character .eye.right { right: 10px; }
+        .logo-character .mouth {
+            position: absolute;
+            width: 12px;
+            height: 4px;
+            background: #FFFFFF;
+            border-radius: 2px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bounce { animation: bounce 2s infinite ease-in-out; }
+        @keyframes bounce { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-10px); } 
+        }
+        .hover-scale:hover { 
+            transform: scale(1.05); 
+            transition: transform 0.5s ease-in-out; 
+        }
+        .gallery-item { 
+            position: relative; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: border 0.5s ease-in-out, transform 0.5s ease-in-out; 
+        }
+        .gallery-item:hover { 
+            border: 2px solid #A0A0A0; 
+            transform: scale(1.05); 
+        }
         .download-btn {
             position: absolute;
             bottom: 10px;
@@ -45,10 +146,16 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
-        .gallery-item:hover .download-btn { opacity: 1; }
-        .download-btn i { color: #FFFFFF; font-size: 1.2rem; }
+        .gallery-item:hover .download-btn { 
+            opacity: 1; 
+            transform: rotate(360deg); 
+        }
+        .download-btn i { 
+            color: #FFFFFF; 
+            font-size: 1.2rem; 
+        }
         .date-strip {
             position: absolute;
             top: 0;
@@ -61,11 +168,15 @@
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
             text-align: center;
+            transition: background 0.5s ease-in-out;
+        }
+        .gallery-item:hover .date-strip {
+            background: linear-gradient(90deg, #4A4A4A, #6A6A6A);
         }
         .new-gif {
             position: relative;
             box-shadow: 0 0 15px rgba(242, 48, 40, 0.5);
-            animation: glow 1.5s infinite alternate;
+            animation: glow 2s infinite alternate ease-in-out;
         }
         @keyframes glow {
             0% { box-shadow: 0 0 15px rgba(242, 48, 40, 0.5); }
@@ -78,20 +189,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
         .modal img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 12px;
-            animation: zoomIn 0.3s ease;
+            animation: zoomIn 0.7s ease-in-out;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
         @keyframes zoomIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         .fancy-button {
             position: relative;
@@ -104,10 +217,10 @@
             border-radius: 8px;
             border: none;
             box-shadow: 0 4px 15px rgba(160, 160, 160, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.5s ease-in-out;
         }
         .fancy-button:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px) rotate(2deg);
             box-shadow: 0 6px 20px rgba(160, 160, 160, 0.5);
             background: linear-gradient(45deg, #D3D3D3, #A0A0A0);
         }
@@ -118,68 +231,331 @@
             background: linear-gradient(45deg, #FF6BD6, #6B6BFF, #FF6BD6);
             background-size: 200%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease-in-out;
             z-index: -1;
             border-radius: 8px;
         }
         .fancy-button:hover::before {
             opacity: 1;
-            animation: gradientShift 3s infinite;
+            animation: gradientShift 3s infinite ease-in-out;
         }
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        .discord-block { position: relative; background: #2A2A2A; border-radius: 12px; padding: 20px; overflow: hidden; }
-        .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
-        .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
-        .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
+        .discord-block { 
+            position: relative; 
+            background: #2A2A2A; 
+            border-radius: 12px; 
+            padding: 20px; 
+            overflow: hidden; 
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out; 
+        }
+        .discord-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+        .discord-block img.logo { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 8px; 
+            border: 2px solid #A0A0A0; 
+        }
+        .discord-block .server-name { 
+            margin-left: 80px; 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #FFFFFF; 
+            transition: color 0.5s ease-in-out; 
+        }
+        .discord-block:hover .server-name {
+            color: #A0A0A0;
+        }
+        .discord-block .banner { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            margin-top: 20px; 
+            border-radius: 8px; 
+            transition: filter 0.5s ease-in-out; 
+        }
+        .discord-block:hover .banner {
+            filter: brightness(1.2);
+        }
+        .rule-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #2A2A2A;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .rule-block {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.5s ease-in-out;
+        }
+        .rule-block:hover {
+            transform: translateY(-5px);
+        }
+        .rule-block.level-1 {
+            background: linear-gradient(45deg, #FF6B6B, #FF3333);
+        }
+        .rule-block.level-2 {
+            background: linear-gradient(45deg, #FFAA33, #FF6B33);
+        }
+        .rule-block.level-3 {
+            background: linear-gradient(45deg, #FF3333, #AA0000);
+        }
+        .rule-block i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .rule-block.warning {
+            background: linear-gradient(45deg, #FF6B6B, #FF3333);
+        }
+        .rule-block.danger {
+            background: linear-gradient(45deg, #FFAA33, #FF6B33);
+        }
+        .rule-block.ban {
+            background: linear-gradient(45deg, #FF3333, #AA0000);
+        }
+        .error-block {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            background: linear-gradient(45deg, #FF3333, #AA0000);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        h1, h2 {
+            position: relative;
+            display: inline-block;
+            animation: slideIn 1s ease-in-out;
+        }
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #A0A0A0, #FFFFFF, #A0A0A0);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: underline 1s ease-in-out forwards;
+        }
+        @keyframes slideIn {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes underline {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+        nav a {
+            position: relative;
+            transition: color 0.5s ease-in-out;
+        }
+        nav a:hover {
+            color: #A0A0A0;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #A0A0A0;
+            transition: width 0.5s ease-in-out;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        #home {
+            position: relative;
+            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+        }
+        #home .background-particles {
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        }
+        #home .particle {
+            animation: float 8s infinite ease-in-out, glowParticle 3s infinite alternate ease-in-out;
+        }
+        @keyframes glowParticle {
+            0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            100% { opacity: 0.6; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+        }
+        #pokki {
+            position: relative;
+            background: linear-gradient(45deg, #2A2A2A, #3A3A3A);
+        }
+        #pokki .background-particles {
+            background: radial-gradient(circle at top left, rgba(160, 160, 160, 0.1) 0%, transparent 60%);
+        }
+        #pokki .particle {
+            width: 6px;
+            height: 6px;
+            background: rgba(160, 160, 160, 0.4);
+            animation: swirl 10s infinite ease-in-out;
+        }
+        @keyframes swirl {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, -20px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        #kotyara {
+            position: relative;
+            background: linear-gradient(135deg, #1A1A1A, #252525);
+        }
+        #kotyara .background-particles {
+            background: radial-gradient(circle at bottom right, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+        }
+        #kotyara .particle {
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 107, 107, 0.3);
+            animation: drift 12s infinite ease-in-out;
+        }
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+            100% { transform: translate(0, 0); }
+        }
+        #gallery {
+            position: relative;
+            background: linear-gradient(90deg, #2A2A2A, #3A3A3A);
+        }
+        #gallery .background-particles {
+            background: radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%);
+        }
+        #gallery .particle {
+            width: 3px;
+            height: 3px;
+            background: rgba(52, 211, 153, 0.3);
+            animation: sparkle 6s infinite ease-in-out;
+        }
+        @keyframes sparkle {
+            0% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.5); }
+            100% { opacity: 0.2; transform: scale(1); }
+        }
+        .adventure-section {
+            position: relative;
+            background: linear-gradient(180deg, #1A1A1A, #2A2A2A);
+        }
+        .adventure-section .background-particles {
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        }
+        .adventure-section .particle {
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: float 8s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-pokki">
+    <div class="warning-message" id="warning-message">
+        Пожалуйста, не перезагружайте сайт слишком часто, он может сломаться! 🥺
+        <span class="close-btn" onclick="document.getElementById('warning-message').style.display='none'">×</span>
+    </div>
+
     <nav class="fixed w-full bg-pokki/95 backdrop-blur-sm z-50 border-b border-mystery">
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-mystery rounded-full flex items-center justify-center">
-                    <div class="pokki-eyes w-6 h-6 relative">
-                        <div class="absolute w-1.5 h-1.5 bg-accent rounded-full left-1 top-1"></div>
-                        <div class="absolute w-1.5 h-1.5 bg-accent rounded-full right-1 top-1"></div>
-                        <div class="absolute w-2 h-1 bg-accent rounded-full bottom-1 left-1/2 -translate-x-1/2"></div>
-                    </div>
+                <div class="logo-character">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="mouth"></div>
                 </div>
                 <span class="text-xl font-bold">Покки Ленд</span>
             </div>
             <div class="hidden md:flex gap-8">
-                <a href="#home" class="hover:text-kotyara transition-colors">Главная</a>
-                <a href="#pokki" class="hover:text-kotyara transition-colors">Покки</a>
-                <a href="#kotyara" class="hover:text-kotyara transition-colors">Котяра</a>
-                <a href="#gallery" class="hover:text-kotyara transition-colors">Галерея</a>
+                <a href="#home">Главная</a>
+                <a href="#pokki">Покки</a>
+                <a href="#kotyara">Котяра</a>
+                <a href="#gallery">Галерея</a>
             </div>
             <div class="text-sm text-gray-500">Сезон 361</div>
         </div>
     </nav>
 
-    <section id="home" class="min-h-screen flex items-center justify-center relative" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A);">
+    <section id="home" class="min-h-screen flex items-center justify-center relative">
+        <div class="background-particles" id="particles-home"></div>
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
-            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Погрузитесь в таинственный мир Покки и уютную атмосферу Котяры.</p>
+            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Дотеры, геншин-фаги? Какая разница, во что играет человек, главное — его характер!</p>
             <a href="https://discord.gg/EbeQnuShft" target="_blank" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Исследовать</a>
         </div>
     </section>
 
-    <section id="pokki" class="py-20 bg-mystery">
+    <section id="pokki" class="py-20">
+        <div class="background-particles" id="particles-pokki"></div>
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-16">Загадка Покки</h2>
-            <div id="discord-block" class="discord-block max-w-3xl mx-auto hover-scale">
+            <h2 class="text-4xl font-bold mb-16">Покки Ленд</h2>
+            <div id="discord-block" class="discord-block max-w-3xl mx-auto">
                 <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
                 <div id="discord-server-name" class="server-name"></div>
                 <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
             </div>
         </div>
+        <div class="container mx-auto px-4 mt-16">
+            <h3 class="text-3xl font-bold text-center mb-12">О сервере и правила</h3>
+            <div class="rule-section">
+                <p class="text-lg mb-4">Добро пожаловать на Поккиленд™. Самый лучший Парк аттракционов во всем интернете.</p>
+                <p class="text-lg mb-4">На нашем сервере можно делать множество вещей: играть с друзьями, общаться с интересными людьми, слушать музыку и многое другое!</p>
+                <p class="text-lg mb-4">Мы будем стараться сделать ваше пребывание здесь лучше, но ничего гарантировать не можем.</p>
+                <h4 class="text-2xl font-bold mb-6">Правила сервера</h4>
+                <p class="text-lg mb-4">На нашем сервере есть несколько правил, которые лучше соблюдать, иначе ПОККИ ПОКАРАЕТ ВАС — вы можете получить временный мут или даже бан.</p>
+                <div class="rule-block warning">
+                    <p><i class="ri-error-warning-line"></i> Спам ради спама запрещён (Наказание 1 уровня)</p>
+                </div>
+                <div class="rule-block warning">
+                    <p><i class="ri-error-warning-line"></i> Оскорбления разрешены, но без перехода на личности (ИРЛ) (Наказание 1 уровня)</p>
+                </div>
+                <div class="rule-block danger">
+                    <p><i class="ri-time-line"></i> NSFW контент в основных чатах запрещён (Наказание 2 уровня)</p>
+                </div>
+                <div class="rule-block danger">
+                    <p><i class="ri-time-line"></i> Политика (не в шуточном ключе) не приветствуется, наказание варьируется (Наказание 2 уровня)</p>
+                </div>
+                <div class="rule-block danger">
+                    <p><i class="ri-time-line"></i> Удаление сообщений для манипуляции какого-либо вида (ПОККИ ВСЁ ВИДИТ, ПОККИ ВСЁ ЗНАЕТ) (Наказание 2 уровня)</p>
+                </div>
+                <div class="rule-block danger">
+                    <p><i class="ri-time-line"></i> Не спамьте пингами (Наказание 2 уровня)</p>
+                </div>
+                <div class="rule-block danger">
+                    <p><i class="ri-time-line"></i> Если ваше сообщение удалили, пусть оно остается удалённым (Наказание 2 уровня)</p>
+                </div>
+                <div class="rule-block ban">
+                    <p><i class="ri-forbid-line"></i> Копирование людей (их аватарок/поведения/ников) для манипуляции запрещается (Вечный бан)</p>
+                </div>
+                <h4 class="text-2xl font-bold mt-8 mb-6">Уровни наказания</h4>
+                <div class="rule-block level-1">
+                    <p><i class="ri-error-warning-line"></i> Наказание 1 уровня: Словесное предупреждение или мут</p>
+                </div>
+                <div class="rule-block level-2">
+                    <p><i class="ri-time-line"></i> Наказание 2 уровня: Мут на неделю и больше или временный бан</p>
+                </div>
+                <div class="rule-block level-3">
+                    <p><i class="ri-forbid-line"></i> Наказание 3 уровня: Вечный бан</p>
+                </div>
+                <p class="text-lg mt-6">Если есть вопросы или уточнения, задавайте их админу в онлайне либо мне. Админ вправе отказать в доступе любому участнику. Он не обязан указывать причины или предупреждать об этом.</p>
+            </div>
+        </div>
     </section>
 
-    <section id="kotyara" class="py-20 bg-pokki">
+    <section id="kotyara" class="py-20">
+        <div class="background-particles" id="particles-kotyara"></div>
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
             <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg hover-scale">
@@ -192,17 +568,21 @@
         </div>
     </section>
 
-    <section id="gallery" class="py-20 bg-mystery">
+    <section id="gallery" class="py-20">
+        <div class="background-particles" id="particles-gallery"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-16">Галерея</h2>
             <div id="gallery-container" class="grid md:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
-    <section class="py-20 bg-pokki text-center">
+    <section class="py-20 text-center adventure-section">
+        <div class="background-particles" id="particles-adventure"></div>
         <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold mb-8">Готов к приключениям?</h2>
-            <a href="#kotyara" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Начать</a>
+            <h2 class="text-4xl font-bold mb-8">Зайти в Discord-сервер?</h2>
+            <div>
+                <a href="https://discord.gg/EbeQnuShft" target="_blank" class="fancy-button">Начать</a>
+            </div>
         </div>
     </section>
 
@@ -224,18 +604,23 @@
     </div>
 
     <script>
-        // Генерация частиц
-        function createParticles() {
-            const container = document.querySelector('#home');
-            for (let i = 0; i < 20; i++) {
+        // Генерация частиц для каждой секции
+        function createParticles(containerId, count) {
+            const container = document.getElementById(containerId);
+            for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
                 container.appendChild(particle);
             }
         }
-        createParticles();
+        createParticles('particles-home', 50);
+        createParticles('particles-pokki', 40);
+        createParticles('particles-kotyara', 30);
+        createParticles('particles-gallery', 60);
+        createParticles('particles-adventure', 50);
 
         // Получение данных о Discord сервере
         async function fetchDiscordData() {
@@ -269,7 +654,6 @@
                 const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
                 const commits = await response.json();
                 if (commits && commits.length > 0) {
-                    // Самый старый коммит — это дата создания файла
                     const creationDate = commits[commits.length - 1].commit.committer.date;
                     return new Date(creationDate);
                 }
@@ -301,7 +685,6 @@
                     return;
                 }
 
-                // Получение дат создания для каждого файла
                 const filesWithDates = await Promise.all(
                     gifFiles.map(async (file) => {
                         const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
@@ -309,21 +692,19 @@
                     })
                 );
 
-                // Сортировка по дате создания (от новых к старым)
                 filesWithDates.sort((a, b) => {
                     if (!a.createdAt || !b.createdAt) return 0;
                     return new Date(b.createdAt) - new Date(a.createdAt);
                 });
 
                 const now = new Date();
-                const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
+                const newThreshold = 15 * 60 * 1000;
 
                 filesWithDates.forEach((file, index) => {
                     const createdAt = file.createdAt;
                     const timeDiff = createdAt ? now - createdAt : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматирование даты (день, месяц, год)
                     let formattedDate = 'Дата неизвестна';
                     if (createdAt && !isNaN(createdAt.getTime())) {
                         const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -331,7 +712,7 @@
                     }
 
                     const div = document.createElement('div');
-                    div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
+                    div.className = `gallery-item ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
                         <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
@@ -340,15 +721,13 @@
                         </div>
                     `;
 
-                    // Открытие модального окна при клике на картинку
                     div.querySelector('img').addEventListener('click', () => {
                         modalImage.src = file.download_url;
                         modal.style.display = 'flex';
                     });
 
-                    // Скачивание при клике на кнопку
                     div.querySelector('.download-btn').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Предотвращаем открытие модального окна
+                        e.stopPropagation();
                         const link = document.createElement('a');
                         link.href = file.download_url;
                         link.download = file.name;
@@ -360,12 +739,16 @@
                     galleryContainer.appendChild(div);
                 });
 
-                // Закрытие модального окна при клике на фон
                 modal.addEventListener('click', () => {
                     modal.style.display = 'none';
                 });
             } catch (error) {
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов</p>';
+                galleryContainer.innerHTML = `
+                    <div class="error-block">
+                        <p>Произошла ошибка загрузки файлов: API Rate Limit Exceeded</p>
+                        <p>Проблемы связаны с ограничениями GitHub API (60 запросов в час для неавторизованных пользователей). Приносим извинения за неудобства!</p>
+                    </div>
+                `;
                 console.error('Ошибка:', error);
             }
         }
