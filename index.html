@@ -8,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -49,20 +48,16 @@
         }
         .particle { 
             position: absolute; 
-            width: 10px; 
-            height: 10px; 
-            background: linear-gradient(45deg, #FF6BD6, #6B6BFF); 
+            width: 8px; 
+            height: 8px; 
+            background: rgba(255, 255, 255, 0.6); 
             border-radius: 50%; 
-            animation: float 8s infinite ease-in-out, rotate 5s infinite linear; 
+            animation: float 8s infinite ease-in-out; 
         }
         @keyframes float { 
             0% { transform: translateY(0) translateX(0); } 
             50% { transform: translateY(-40px) translateX(15px); } 
             100% { transform: translateY(0) translateX(0); } 
-        }
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         .logo-character {
             width: 40px;
@@ -119,9 +114,8 @@
             overflow: hidden; 
             transition: border 0.5s ease-in-out, transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out; 
             background: #2A2A2A; 
-            opacity: 1;
+            opacity: 0;
             animation: fadeInRotate 1s ease-in-out forwards;
-            min-height: 300px;
         }
         @keyframes fadeInRotate {
             0% { opacity: 0; transform: rotate(-5deg) scale(0.9); }
@@ -400,7 +394,6 @@
         nav a:hover::after {
             width: 100%;
         }
-        /* Плавающие иконки в #home */
         .floating-icon {
             position: absolute;
             font-size: 1.5rem;
@@ -412,32 +405,6 @@
             50% { transform: translateY(-50px) translateX(20px); opacity: 0.8; }
             100% { transform: translateY(0) translateX(0); opacity: 0.5; }
         }
-        /* Плавные переходы между секциями */
-        section {
-            position: relative;
-            overflow: hidden;
-        }
-        section::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C300,120 900,0 1200,120 L1200,0 L0,0 Z' fill='%231A1A1A'/%3E%3C/svg%3E") repeat-x;
-            background-size: 1200px 50px;
-        }
-        section::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,120 C300,0 900,120 1200,0 L1200,120 L0,120 Z' fill='%231A1A1A'/%3E%3C/svg%3E") repeat-x;
-            background-size: 1200px 50px;
-        }
-        /* Уникальные фоновые эффекты для каждой секции */
         #home {
             position: relative;
             background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
@@ -446,13 +413,11 @@
             background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
         }
         #home .particle {
-            background: linear-gradient(45deg, #FFD700, #FF6BD6);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             animation: float 8s infinite ease-in-out, glowParticle 3s infinite alternate ease-in-out;
         }
         @keyframes glowParticle {
-            0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-            100% { opacity: 0.8; box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+            0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            100% { opacity: 0.6; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
         }
         #pokki {
             position: relative;
@@ -462,11 +427,10 @@
             background: radial-gradient(circle at top left, rgba(160, 160, 160, 0.1) 0%, transparent 60%);
         }
         #pokki .particle {
-            width: 12px;
-            height: 12px;
-            background: linear-gradient(45deg, #00CED1, #FF4500);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: fallingStar 5s infinite linear, rotate 3s infinite linear;
+            width: 6px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.7);
+            animation: fallingStar 5s infinite linear;
         }
         @keyframes fallingStar {
             0% { transform: translateY(-100vh) translateX(0); opacity: 0; }
@@ -482,11 +446,12 @@
             background: radial-gradient(circle at bottom right, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
         }
         #kotyara .particle {
-            width: 15px;
-            height: 15px;
-            background: linear-gradient(45deg, #FF69B4, #00FA9A);
-            clip-path: circle(50% at 50% 50%);
-            animation: bubbleDrift 12s infinite ease-in-out, rotate 4s infinite linear;
+            width: 10px;
+            height: 10px;
+            background: transparent;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 50%;
+            animation: bubbleDrift 12s infinite ease-in-out;
         }
         @keyframes bubbleDrift {
             0% { transform: translateY(100vh) translateX(0); opacity: 0.5; }
@@ -507,11 +472,10 @@
             background: radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%);
         }
         #gallery .particle {
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(45deg, #00FF7F, #FF00FF);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: sparkle 3s infinite ease-in-out, rotate 2s infinite linear;
+            width: 3px;
+            height: 3px;
+            background: rgba(52, 211, 153, 0.7);
+            animation: sparkle 3s infinite ease-in-out;
         }
         @keyframes sparkle {
             0% { opacity: 0; transform: scale(0); }
@@ -526,11 +490,10 @@
             background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
         }
         .adventure-section .particle {
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(45deg, #1E90FF, #FFD700);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: mistWave 15s infinite linear, rotate 5s infinite linear;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            animation: mistWave 15s infinite linear;
         }
         @keyframes mistWave {
             0% { transform: translateX(-100vw) translateY(0); opacity: 0.3; }
@@ -560,7 +523,7 @@
         </div>
     </nav>
 
-    <section id="home" class="min-h-screen flex items-center justify-center relative" data-aos="fade-up">
+    <section id="home" class="min-h-screen flex items-center justify-center relative">
         <div class="background-particles" id="particles-home"></div>
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
@@ -574,14 +537,14 @@
         </div>
     </section>
 
-    <section id="pokki" class="py-20 relative" data-aos="fade-up">
+    <section id="pokki" class="py-20">
         <div class="background-particles" id="particles-pokki"></div>
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16">Покки Ленд</h2>
             <div id="discord-block" class="discord-block max-w-3xl mx-auto">
-                <img id="discord-logo" class="logo" src="https://picsum.photos/80/80" alt="Discord Logo">
+                <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
                 <div id="discord-server-name" class="server-name"></div>
-                <img id="discord-banner" class="banner" src="https://picsum.photos/600/200" alt="Discord Banner">
+                <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
             </div>
         </div>
         <div class="container mx-auto px-4 mt-16">
@@ -631,7 +594,7 @@
         </div>
     </section>
 
-    <section id="kotyara" class="py-20 relative" data-aos="fade-up">
+    <section id="kotyara" class="py-20">
         <div class="background-particles" id="particles-kotyara"></div>
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
@@ -650,7 +613,7 @@
         </div>
     </section>
 
-    <section id="gallery" class="py-20 relative" data-aos="fade-up">
+    <section id="gallery" class="py-20">
         <div class="background-particles" id="particles-gallery"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-16">Галерея</h2>
@@ -658,7 +621,7 @@
         </div>
     </section>
 
-    <section class="py-20 text-center adventure-section relative" data-aos="fade-up">
+    <section class="py-20 text-center adventure-section">
         <div class="background-particles" id="particles-adventure"></div>
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold mb-8">Зайти в Discord-сервер?</h2>
@@ -690,13 +653,14 @@
         <img id="modal-image" src="" alt="Full Image">
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
     <script>
-        // Инициализация AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
+        // Проверяем, загружен ли date-fns
+        if (typeof format === 'undefined') {
+            console.error('date-fns не загружен. Проверьте подключение к https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js');
+        } else {
+            console.log('date-fns успешно загружен');
+        }
 
         // Генерация частиц для каждой секции
         function createParticles(containerId, count) {
@@ -744,8 +708,8 @@
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://picsum.photos/80/80';
-                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://picsum.photos/600/200';
+                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://via.placeholder.com/80';
+                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://via.placeholder.com/600x200';
                 const serverName = data.guild.name || 'Покки Ленд';
 
                 document.getElementById('discord-logo').src = logoUrl;
@@ -761,76 +725,95 @@
         }
         fetchDiscordData();
 
-        // Динамическая загрузка галереи
-        function loadGallery() {
+        // Динамическая загрузка галереи из images.json
+        async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
 
-            // Тестовые данные с использованием picsum.photos
-            const testImages = [
-                { url: 'https://picsum.photos/300/200?random=1', date: '2025-03-19T11:20:01Z' },
-                { url: 'https://picsum.photos/300/200?random=2', date: '2025-03-19T11:25:01Z' },
-                { url: 'https://picsum.photos/300/200?random=3', date: '2025-03-19T11:30:01Z' }
-            ];
+            try {
+                const imagesJsonUrl = 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/images.json';
+                console.log('Попытка загрузки images.json с URL:', imagesJsonUrl);
+                const response = await fetch(imagesJsonUrl);
 
-            console.log('Загружаем тестовые данные для галереи:', testImages);
+                if (!response.ok) {
+                    throw new Error(`Не удалось загрузить images.json. Статус: ${response.status} ${response.statusText}`);
+                }
 
-            if (!testImages || testImages.length === 0) {
-                console.error('Тестовые данные пусты');
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
-                return;
+                const imageFiles = await response.json();
+                console.log('Успешно загружен images.json:', imageFiles);
+
+                if (!imageFiles || imageFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
+                    return;
+                }
+
+                const now = new Date();
+                console.log('Текущее время:', now.toISOString());
+                const newThreshold = 5 * 60 * 1000; // 5 минут в миллисекундах
+
+                imageFiles.forEach((file, index) => {
+                    const uploadDate = new Date(file.date);
+                    const isValidDate = !isNaN(uploadDate.getTime());
+                    const timeDiff = isValidDate ? now - uploadDate : Infinity;
+                    const isNew = timeDiff <= newThreshold;
+
+                    console.log(`Файл ${file.url}:`);
+                    console.log(`  Дата загрузки: ${file.date}`);
+                    console.log(`  Разница во времени: ${timeDiff / 1000} секунд`);
+                    console.log(`  Считается новым: ${isNew}`);
+
+                    let formattedDateTime = 'Неизвестная дата';
+                    if (isValidDate) {
+                        if (typeof format === 'undefined') {
+                            console.error('date-fns не доступен, используем стандартное форматирование даты');
+                            formattedDateTime = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
+                                                uploadDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                        } else {
+                            const formattedDate = format(uploadDate, 'dd.MM.yyyy');
+                            const formattedTime = format(uploadDate, 'h:mm a');
+                            formattedDateTime = `${formattedDate}, ${formattedTime}`;
+                        }
+                    } else {
+                        console.warn('Invalid date for file:', file.url, 'Date:', file.date);
+                    }
+
+                    const div = document.createElement('div');
+                    div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
+                    div.style.animationDelay = `${index * 0.1}s`;
+                    div.innerHTML = `
+                        <div class="date-strip">${formattedDateTime}</div>
+                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
+                        <div class="download-btn">
+                            <i class="ri-download-line"></i>
+                        </div>
+                    `;
+
+                    div.querySelector('img').addEventListener('click', () => {
+                        modalImage.src = file.url;
+                        modal.style.display = 'flex';
+                    });
+
+                    div.querySelector('.download-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const link = document.createElement('a');
+                        link.href = file.url;
+                        link.download = file.url.split('/').pop();
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+
+                    galleryContainer.appendChild(div);
+                });
+
+                modal.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            } catch (error) {
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки галереи: ' + error.message + '</p>';
+                console.error('Ошибка загрузки галереи:', error);
             }
-
-            testImages.forEach((file, index) => {
-                console.log(`Создаем элемент галереи для файла: ${file.url}`);
-
-                // Форматирование даты без date-fns
-                const uploadDate = new Date(file.date);
-                const formattedDate = uploadDate.toLocaleString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                const div = document.createElement('div');
-                div.className = 'gallery-item';
-                div.style.animationDelay = `${index * 0.1}s`;
-                div.innerHTML = `
-                    <div class="date-strip">${formattedDate}</div>
-                    <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
-                    <div class="download-btn">
-                        <i class="ri-download-line"></i>
-                    </div>
-                `;
-
-                div.querySelector('img').addEventListener('click', () => {
-                    console.log('Открываем модальное окно для изображения:', file.url);
-                    modalImage.src = file.url;
-                    modal.style.display = 'flex';
-                });
-
-                div.querySelector('.download-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    console.log('Скачиваем изображение:', file.url);
-                    const link = document.createElement('a');
-                    link.href = file.url;
-                    link.download = `image-${index + 1}.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-
-                galleryContainer.appendChild(div);
-                console.log('Элемент галереи добавлен в контейнер');
-            });
-
-            modal.addEventListener('click', () => {
-                console.log('Закрываем модальное окно');
-                modal.style.display = 'none';
-            });
         }
         loadGallery();
     </script>
