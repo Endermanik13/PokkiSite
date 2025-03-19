@@ -119,9 +119,9 @@
             overflow: hidden; 
             transition: border 0.5s ease-in-out, transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out; 
             background: #2A2A2A; 
-            opacity: 1; /* Убрали начальную opacity: 0, чтобы элементы были видны сразу */
+            opacity: 1;
             animation: fadeInRotate 1s ease-in-out forwards;
-            min-height: 300px; /* Добавили минимальную высоту для видимости */
+            min-height: 300px;
         }
         @keyframes fadeInRotate {
             0% { opacity: 0; transform: rotate(-5deg) scale(0.9); }
@@ -579,9 +579,9 @@
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-4xl font-bold mb-16">Покки Ленд</h2>
             <div id="discord-block" class="discord-block max-w-3xl mx-auto">
-                <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
+                <img id="discord-logo" class="logo" src="https://picsum.photos/80/80" alt="Discord Logo">
                 <div id="discord-server-name" class="server-name"></div>
-                <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
+                <img id="discord-banner" class="banner" src="https://picsum.photos/600/200" alt="Discord Banner">
             </div>
         </div>
         <div class="container mx-auto px-4 mt-16">
@@ -690,7 +690,6 @@
         <img id="modal-image" src="" alt="Full Image">
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Инициализация AOS
@@ -698,13 +697,6 @@
             duration: 1000,
             once: true
         });
-
-        // Проверяем, загружен ли date-fns
-        if (typeof format === 'undefined') {
-            console.error('date-fns не загружен. Проверьте подключение к https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js');
-        } else {
-            console.log('date-fns успешно загружен');
-        }
 
         // Генерация частиц для каждой секции
         function createParticles(containerId, count) {
@@ -752,8 +744,8 @@
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://via.placeholder.com/80';
-                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://via.placeholder.com/600x200';
+                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://picsum.photos/80/80';
+                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://picsum.photos/600/200';
                 const serverName = data.guild.name || 'Покки Ленд';
 
                 document.getElementById('discord-logo').src = logoUrl;
@@ -775,11 +767,11 @@
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
 
-            // Тестовые данные
+            // Тестовые данные с использованием picsum.photos
             const testImages = [
-                { url: 'https://via.placeholder.com/300x200.png?text=Image+1', date: '2025-03-19T11:20:01Z' },
-                { url: 'https://via.placeholder.com/300x200.png?text=Image+2', date: '2025-03-19T11:25:01Z' },
-                { url: 'https://via.placeholder.com/300x200.png?text=Image+3', date: '2025-03-19T11:30:01Z' }
+                { url: 'https://picsum.photos/300/200?random=1', date: '2025-03-19T11:20:01Z' },
+                { url: 'https://picsum.photos/300/200?random=2', date: '2025-03-19T11:25:01Z' },
+                { url: 'https://picsum.photos/300/200?random=3', date: '2025-03-19T11:30:01Z' }
             ];
 
             console.log('Загружаем тестовые данные для галереи:', testImages);
@@ -793,11 +785,21 @@
             testImages.forEach((file, index) => {
                 console.log(`Создаем элемент галереи для файла: ${file.url}`);
 
+                // Форматирование даты без date-fns
+                const uploadDate = new Date(file.date);
+                const formattedDate = uploadDate.toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
                 div.style.animationDelay = `${index * 0.1}s`;
                 div.innerHTML = `
-                    <div class="date-strip">${file.date}</div>
+                    <div class="date-strip">${formattedDate}</div>
                     <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                     <div class="download-btn">
                         <i class="ri-download-line"></i>
@@ -815,7 +817,7 @@
                     console.log('Скачиваем изображение:', file.url);
                     const link = document.createElement('a');
                     link.href = file.url;
-                    link.download = file.url.split('/').pop();
+                    link.download = `image-${index + 1}.jpg`;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
