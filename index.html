@@ -44,13 +44,13 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: -1;
+            z-index: 0; /* Увеличиваем z-index, чтобы частицы были видны */
         }
         .particle { 
             position: absolute; 
-            width: 4px; 
-            height: 4px; 
-            background: rgba(255, 255, 255, 0.3); 
+            width: 8px; /* Увеличиваем размер частиц */
+            height: 8px; 
+            background: rgba(255, 255, 255, 0.6); /* Увеличиваем непрозрачность */
             border-radius: 50%; 
             animation: float 8s infinite ease-in-out; 
         }
@@ -65,6 +65,13 @@
             background: #000000;
             border-radius: 50%;
             position: relative;
+            animation: logoWiggle 3s infinite ease-in-out;
+        }
+        @keyframes logoWiggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
         }
         .logo-character .eye {
             position: absolute;
@@ -73,6 +80,10 @@
             background: #FFFFFF;
             border-radius: 50%;
             top: 12px;
+            transition: background 0.3s ease;
+        }
+        .logo-character:hover .eye {
+            background: #FF6B6B; /* Меняем цвет глаз при наведении */
         }
         .logo-character .eye.left { left: 10px; }
         .logo-character .eye.right { right: 10px; }
@@ -226,6 +237,22 @@
             opacity: 1;
             animation: gradientShift 3s infinite ease-in-out;
         }
+        .fancy-button:hover .spark {
+            display: block;
+        }
+        .spark {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #FF6BD6;
+            border-radius: 50%;
+            display: none;
+            animation: sparkBurst 1s ease-in-out;
+        }
+        @keyframes sparkBurst {
+            0% { transform: translate(0, 0) scale(0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1.5); opacity: 0; }
+        }
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -238,12 +265,6 @@
             padding: 20px; 
             overflow: hidden; 
             transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out; 
-            opacity: 0;
-            animation: slideInFromLeft 1s ease-in-out forwards;
-        }
-        @keyframes slideInFromLeft {
-            0% { opacity: 0; transform: translateX(-50px); }
-            100% { opacity: 1; transform: translateX(0); }
         }
         .discord-block:hover {
             transform: translateY(-5px);
@@ -257,11 +278,6 @@
             height: 60px; 
             border-radius: 8px; 
             border: 2px solid #A0A0A0; 
-            animation: spin 4s infinite linear;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         .discord-block .server-name { 
             margin-left: 80px; 
@@ -269,11 +285,6 @@
             font-weight: bold; 
             color: #FFFFFF; 
             transition: color 0.5s ease-in-out; 
-            animation: textGlow 2s infinite alternate;
-        }
-        @keyframes textGlow {
-            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
-            100% { text-shadow: 0 0 15px rgba(255, 255, 255, 1); }
         }
         .discord-block:hover .server-name {
             color: #A0A0A0;
@@ -285,12 +296,6 @@
             margin-top: 20px; 
             border-radius: 8px; 
             transition: filter 0.5s ease-in-out; 
-            animation: bannerPulse 3s infinite ease-in-out;
-        }
-        @keyframes bannerPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
         }
         .discord-block:hover .banner {
             filter: brightness(1.2);
@@ -308,20 +313,6 @@
             padding: 15px;
             border-radius: 8px;
             transition: transform 0.5s ease-in-out;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-in-out forwards;
-        }
-        .rule-block:nth-child(1) { animation-delay: 0.1s; }
-        .rule-block:nth-child(2) { animation-delay: 0.2s; }
-        .rule-block:nth-child(3) { animation-delay: 0.3s; }
-        .rule-block:nth-child(4) { animation-delay: 0.4s; }
-        .rule-block:nth-child(5) { animation-delay: 0.5s; }
-        .rule-block:nth-child(6) { animation-delay: 0.6s; }
-        .rule-block:nth-child(7) { animation-delay: 0.7s; }
-        .rule-block:nth-child(8) { animation-delay: 0.8s; }
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
         .rule-block:hover {
             transform: translateY(-5px);
@@ -357,7 +348,7 @@
             text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        h1, h2, h3, h4 {
+        h1, h2 {
             position: relative;
             display: inline-block;
             opacity: 0;
@@ -367,7 +358,7 @@
             0% { opacity: 0; transform: translateY(30px) scale(0.9); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
-        h1::after, h2::after, h3::after, h4::after {
+        h1::after, h2::after {
             content: '';
             position: absolute;
             bottom: -5px;
@@ -403,7 +394,19 @@
         nav a:hover::after {
             width: 100%;
         }
-        /* Анимации и фоновые эффекты для каждой секции */
+        /* Плавающие иконки в #home */
+        .floating-icon {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            animation: floatIcon 10s infinite ease-in-out;
+        }
+        @keyframes floatIcon {
+            0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+            50% { transform: translateY(-50px) translateX(20px); opacity: 0.8; }
+            100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+        }
+        /* Уникальные фоновые эффекты для каждой секции */
         #home {
             position: relative;
             background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
@@ -417,28 +420,6 @@
         @keyframes glowParticle {
             0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
             100% { opacity: 0.6; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
-        }
-        #home h1 {
-            animation: bounceIn 1.5s ease-in-out;
-        }
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        #home p {
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
-            animation-delay: 0.5s;
-        }
-        #home a {
-            opacity: 0;
-            animation: slideInFromBottom 1s ease-in-out forwards;
-            animation-delay: 1s;
-        }
-        @keyframes slideInFromBottom {
-            0% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
         #pokki {
             position: relative;
@@ -458,19 +439,6 @@
             20% { opacity: 1; }
             80% { opacity: 1; }
             100% { transform: translateY(100vh) translateX(50vw); opacity: 0; }
-        }
-        #pokki h2, #pokki h3, #pokki h4 {
-            animation: textPop 1s ease-in-out;
-        }
-        @keyframes textPop {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        #pokki p {
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
-            animation-delay: 0.3s;
         }
         #kotyara {
             position: relative;
@@ -492,32 +460,15 @@
             50% { transform: translateY(0) translateX(30px); opacity: 0.8; }
             100% { transform: translateY(-100vh) translateX(-30px); opacity: 0.5; }
         }
-        #kotyara h2 {
-            animation: textGlow 2s infinite alternate;
-        }
-        #kotyara img {
-            animation: floatImage 3s infinite ease-in-out;
-        }
-        @keyframes floatImage {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0); }
-        }
-        #kotyara p {
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
-            animation-delay: 0.5s;
-        }
-        #kotyara a {
-            animation: buttonSpin 2s infinite linear;
-        }
-        @keyframes buttonSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
         #gallery {
             position: relative;
             background: linear-gradient(90deg, #2A2A2A, #3A3A3A);
+            animation: gradientFlow 10s infinite ease-in-out;
+        }
+        @keyframes gradientFlow {
+            0% { background: linear-gradient(90deg, #2A2A2A, #3A3A3A); }
+            50% { background: linear-gradient(90deg, #3A3A3A, #2A2A2A); }
+            100% { background: linear-gradient(90deg, #2A2A2A, #3A3A3A); }
         }
         #gallery .background-particles {
             background: radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%);
@@ -532,9 +483,6 @@
             0% { opacity: 0; transform: scale(0); }
             50% { opacity: 1; transform: scale(1.5); }
             100% { opacity: 0; transform: scale(0); }
-        }
-        #gallery h2 {
-            animation: textGlow 2s infinite alternate;
         }
         .adventure-section {
             position: relative;
@@ -553,10 +501,6 @@
             0% { transform: translateX(-100vw) translateY(0); opacity: 0.3; }
             50% { opacity: 0.5; }
             100% { transform: translateX(100vw) translateY(50vh); opacity: 0.3; }
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -586,7 +530,12 @@
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
             <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Дотеры, геншин-фаги? Какая разница, во что играет человек, главное — его характер!</p>
-            <a href="https://discord.gg/EbeQnuShft" target="_blank" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Исследовать</a>
+            <a href="https://discord.gg/EbeQnuShft" target="_blank" class="fancy-button relative">
+                Исследовать
+                <div class="spark" style="--x: 20px; --y: 10px;"></div>
+                <div class="spark" style="--x: -15px; --y: -5px;"></div>
+                <div class="spark" style="--x: 10px; --y: -15px;"></div>
+            </a>
         </div>
     </section>
 
@@ -656,7 +605,12 @@
                     <img id="kotyara-logo" class="w-16 h-16 rounded-lg" src="https://cdn4.cdn-telegram.org/file/rXiiX0PsfYoxwyPdnsax9pCuftEfU_yFyvOBDsMxdxoT8L0tvYNQB9qrRtv0_11jocVEZkubCDOdQWSt6bTInmfe7cqoqHPAbEoQDKXTNIGJ2mvlKvw0rEPMmQ2kZbZhTmZ4vzIWUwWs7A95AwtmRid6SE5iQBUx15JYWpGf2717PhERxsa0q91rayrkKIFwoBB6aOXb2CB-xYZ0Bo4O0f-6Wrh0UixUZ45JixDu347841bmdE2-dIppYV9BBXRy2mcKKT4c6K0heaTpSzb9-zyCM3k8p5whTJ4J2W3swSObZCN2tDhc7Luf07VvUORPNsc0KhoK7rHlrPNQUypwuQ.jpg" alt="Kotyara Logo">
                 </div>
                 <p class="text-xl mb-8 text-gray-400">Мяу`   Музей для моих рисунков и мыслей, добро пожаловать</p>
-                <a href="https://t.me/Kottyaraq" target="_blank" class="fancy-button">Найти Котяру</a>
+                <a href="https://t.me/Kottyaraq" target="_blank" class="fancy-button relative">
+                    Найти Котяру
+                    <div class="spark" style="--x: 20px; --y: 10px;"></div>
+                    <div class="spark" style="--x: -15px; --y: -5px;"></div>
+                    <div class="spark" style="--x: 10px; --y: -15px;"></div>
+                </a>
             </div>
         </div>
     </section>
@@ -674,7 +628,12 @@
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold mb-8">Зайти в Discord-сервер?</h2>
             <div>
-                <a href="https://discord.gg/EbeQnuShft" target="_blank" class="fancy-button">Начать</a>
+                <a href="https://discord.gg/EbeQnuShft" target="_blank" class="fancy-button relative">
+                    Начать
+                    <div class="spark" style="--x: 20px; --y: 10px;"></div>
+                    <div class="spark" style="--x: -15px; --y: -5px;"></div>
+                    <div class="spark" style="--x: 10px; --y: -15px;"></div>
+                </a>
             </div>
         </div>
     </section>
@@ -687,7 +646,7 @@
     </footer>
 
     <div class="fixed bottom-4 right-4 bounce">
-        <a href="https://t.me/Kottyaraq" target="_blank" class="w-12 h-12 bg-kotyara rounded-full flex items-center justify-content: center text-pokki hover-scale">
+        <a href="https://t.me/Kottyaraq" target="_blank" class="w-12 h-12 bg-kotyara rounded-full flex items-center justify-center text-pokki hover-scale">
             <i class="ri-telegram-fill ri-lg"></i>
         </a>
     </div>
@@ -708,6 +667,11 @@
         // Генерация частиц для каждой секции
         function createParticles(containerId, count) {
             const container = document.getElementById(containerId);
+            if (!container) {
+                console.error(`Контейнер с ID ${containerId} не найден`);
+                return;
+            }
+            console.log(`Создаем ${count} частиц для ${containerId}`);
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -722,6 +686,21 @@
         createParticles('particles-kotyara', 30);
         createParticles('particles-gallery', 60);
         createParticles('particles-adventure', 20);
+
+        // Генерация плавающих иконок в #home
+        function createFloatingIcons() {
+            const container = document.getElementById('particles-home');
+            const icons = ['ri-star-fill', 'ri-heart-fill', 'ri-moon-fill'];
+            for (let i = 0; i < 10; i++) {
+                const icon = document.createElement('i');
+                icon.className = `floating-icon ${icons[Math.floor(Math.random() * icons.length)]}`;
+                icon.style.left = `${Math.random() * 100}%`;
+                icon.style.top = `${Math.random() * 100}%`;
+                icon.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(icon);
+            }
+        }
+        createFloatingIcons();
 
         // Получение данных о Discord сервере
         async function fetchDiscordData() {
