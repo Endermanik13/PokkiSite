@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Используем GITHUB_TOKEN для доступа
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -21,14 +23,14 @@ jobs:
 
       - name: Generate images.json
         run: |
-          # Устанавливаем зависимости, если нужно
+          # Устанавливаем зависимости
           npm install -g @actions/github
           # Создаем список файлов с правильными URL для GitHub Pages
           node -e "
             const fs = require('fs');
             const files = fs.readdirSync('.')
               .filter(f => /\.(gif|png|jpg)$/i.test(f))
-              .map(f => 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f + f);
+              .map(f => 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f);
             fs.writeFileSync('images.json', JSON.stringify(files, null, 2));
           "
 
