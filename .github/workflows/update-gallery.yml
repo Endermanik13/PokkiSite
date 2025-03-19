@@ -1,57 +1,15 @@
-name: Update Image Gallery
-
-on:
-  push:
-    paths:
-      - '*.gif'
-      - '*.png'
-      - '*.jpg'
-
-jobs:
-  update-gallery:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: |
-          npm install -g @actions/github
-          npm install @octokit/rest
-
       - name: Generate images.json with dates
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node -e "
             const fs = require('fs');
-            const { Octokit } = require('@octokit/rest');
-            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            const { execSync } = require('child_process');
 
             console.log('Starting script...');
 
-            async function getFileCreationDate(owner, repo, path) {
+            function getFileCreationDate(path) {
               try {
-                console.log('Fetching commit date for:', path);
-                const commits = await octokit.repos.listCommits({
-                  owner,
-                  repo,
-                  path,
-                  per_page: 1,
-                });
-                if (commits.data.length > 0) {
-                  console.log('Commit date found:', commits.data[0].commit.committer.date);
-                  return commits.data[0].commit.committer.date;
-                }
-                console.log('No commits found, using current date');
-                return new Date().toISOString();
+                const log = execSync(\`git log --follow --format=%aI -- \${path} | tail -1\`).toString().trim();
+                return log || new Date().toISOString();
               } catch (error) {
                 console.error('Error fetching commit date for', path, error.message);
                 return new Date().toISOString();
@@ -79,7 +37,7 @@ jobs:
                 const filesWithDates = [];
                 for (const file of files) {
                   console.log('Processing file:', file.name);
-                  const date = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
+                  const date = getFileCreationDate(file.name);
                   filesWithDates.push({
                     url: file.url,
                     date: date
@@ -97,11 +55,3 @@ jobs:
               }
             })();
           "
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add images.json
-          git commit -m "Update images.json with new gallery files and dates" || echo "No changes to commit"
-          git push
