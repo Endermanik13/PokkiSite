@@ -320,78 +320,24 @@
         }
         fetchDiscordData();
 
-        // Получение даты создания файла через историю коммитов
-        async function getFileCreationDate(owner, repo, path) {
-            const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
-            try {
-                const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
-                }
-                const commits = await response.json();
-                if (commits && commits.length > 0) {
-                    const creationDate = commits[commits.length - 1].commit.committer.date;
-                    return new Date(creationDate);
-                }
-                return null;
-            } catch (error) {
-                console.error(`Ошибка получения даты для файла ${path}:`, error);
-                return null;
-            }
-        }
-
-        // Динамическая загрузка GIF-ок из корня main
+        // Динамическая загрузка файлов
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
-            const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
+            const supportedExtensions = ['.gif', '.png', '.jpg', '.jpeg', '.webp'];
 
-            try {
-                const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
-                }
-                const files = await response.json();
-
-                if (!Array.isArray(files)) {
-                    throw new Error('Ответ API не является массивом. Возможно, репозиторий недоступен или пуст.');
-                }
-
-                if (files.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
-                    return;
-                }
-
-                const gifFiles = files.filter(file => file.name.endsWith('.gif') && file.name !== 'README.md');
-                if (gifFiles.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
-                    return;
-                }
-
-                // Получение дат создания для каждого файла
-                const filesWithDates = await Promise.all(
-                    gifFiles.map(async (file) => {
-                        const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
-                        return { ...file, createdAt };
-                    })
-                );
-
-                // Сортировка по дате создания (от новых к старым)
-                filesWithDates.sort((a, b) => {
-                    if (!a.createdAt || !b.createdAt) return 0;
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                });
-
+            // Функция для отображения файлов
+            function displayFiles(files) {
+                galleryContainer.innerHTML = ''; // Очищаем галерею
                 const now = new Date();
                 const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
 
-                filesWithDates.forEach((file, index) => {
-                    const createdAt = file.createdAt;
+                files.forEach((file, index) => {
+                    const createdAt = file.createdAt || null;
                     const timeDiff = createdAt ? now - createdAt : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматирование даты (день, месяц, год)
                     let formattedDate = 'Дата неизвестна';
                     if (createdAt && !isNaN(createdAt.getTime())) {
                         const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -402,7 +348,7 @@
                     div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
-                        <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
+                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                         <div class="download-btn">
                             <i class="ri-download-line"></i>
                         </div>
@@ -410,15 +356,15 @@
 
                     // Открытие модального окна при клике на картинку
                     div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file.download_url;
+                        modalImage.src = file.url;
                         modal.style.display = 'flex';
                     });
 
                     // Скачивание при клике на кнопку
                     div.querySelector('.download-btn').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Предотвращаем открытие модального окна
+                        e.stopPropagation();
                         const link = document.createElement('a');
-                        link.href = file.download_url;
+                        link.href = file.url;
                         link.download = file.name;
                         document.body.appendChild(link);
                         link.click();
@@ -432,8 +378,41 @@
                 modal.addEventListener('click', () => {
                     modal.style.display = 'none';
                 });
+            }
+
+            // Загрузка файлов с локального сервера
+            try {
+                const response = await fetch('/files');
+                if (!response.ok) {
+                    throw new Error(`Не удалось загрузить список файлов: ${response.status} - ${response.statusText}`);
+                }
+                const files = await response.json();
+
+                if (!Array.isArray(files)) {
+                    throw new Error('Ответ сервера не является массивом.');
+                }
+
+                // Фильтрация файлов по поддерживаемым расширениям
+                const imageFiles = files.filter(file => {
+                    const ext = file.toLowerCase().split('.').pop();
+                    return supportedExtensions.includes(`.${ext}`);
+                });
+
+                if (imageFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
+                    return;
+                }
+
+                // Формируем список файлов с URL
+                const filesToDisplay = imageFiles.map(file => ({
+                    name: file,
+                    url: `/${file}`,
+                    createdAt: null
+                }));
+
+                displayFiles(filesToDisplay);
             } catch (error) {
-                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Ошибка загрузки файлов: ${error.message}</p>`;
+                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Ошибка загрузки файлов: ${error.message}. Запустите локальный сервер (например, python -m http.server) и добавьте API для получения списка файлов.</p>`;
                 console.error('Детали ошибки:', error);
             }
         }
