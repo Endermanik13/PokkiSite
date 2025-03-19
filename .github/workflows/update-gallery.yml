@@ -21,18 +21,25 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Install dependencies
+        run: |
+          npm install -g @actions/github
+          npm install @octokit/rest
+
       - name: Generate images.json with dates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install -g @actions/github
           node -e "
             const fs = require('fs');
             const { Octokit } = require('@octokit/rest');
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
+            console.log('Starting script...');
+
             async function getFileCreationDate(owner, repo, path) {
               try {
+                console.log('Fetching commit date for:', path);
                 const commits = await octokit.repos.listCommits({
                   owner,
                   repo,
@@ -40,36 +47,54 @@ jobs:
                   per_page: 1,
                 });
                 if (commits.data.length > 0) {
+                  console.log('Commit date found:', commits.data[0].commit.committer.date);
                   return commits.data[0].commit.committer.date;
                 }
+                console.log('No commits found, using current date');
                 return new Date().toISOString();
               } catch (error) {
-                console.error('Error fetching commit date for', path, error);
+                console.error('Error fetching commit date for', path, error.message);
                 return new Date().toISOString();
               }
             }
 
             (async () => {
-              const files = fs.readdirSync('.')
-                .filter(f => /\.(gif|png|jpg)$/i.test(f))
-                .map(f => ({
-                  url: 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f,
-                  name: f
-                }));
+              try {
+                console.log('Reading files...');
+                const files = fs.readdirSync('.')
+                  .filter(f => /\.(gif|png|jpg)$/i.test(f))
+                  .map(f => ({
+                    url: 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/' + f,
+                    name: f
+                  }));
 
-              const filesWithDates = [];
-              for (const file of files) {
-                const date = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
-                filesWithDates.push({
-                  url: file.url,
-                  date: date
-                });
+                console.log('Files found:', files);
+
+                if (files.length === 0) {
+                  console.log('No image files found, creating empty images.json');
+                  fs.writeFileSync('images.json', JSON.stringify([], null, 2));
+                  return;
+                }
+
+                const filesWithDates = [];
+                for (const file of files) {
+                  console.log('Processing file:', file.name);
+                  const date = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
+                  filesWithDates.push({
+                    url: file.url,
+                    date: date
+                  });
+                }
+
+                console.log('Sorting files by date...');
+                filesWithDates.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                console.log('Writing to images.json:', filesWithDates);
+                fs.writeFileSync('images.json', JSON.stringify(filesWithDates, null, 2));
+              } catch (error) {
+                console.error('Error in script:', error.message);
+                process.exit(1);
               }
-
-              // Сортируем по дате (новые файлы сверху)
-              filesWithDates.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-              fs.writeFileSync('images.json', JSON.stringify(filesWithDates, null, 2));
             })();
           "
 
