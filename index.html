@@ -768,12 +768,20 @@
         }
         fetchDiscordData();
 
-        // Динамическая загрузка галереи из images.json
+        // Динамическая загрузка галереи
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
 
+            // Тестовые данные (на случай, если загрузка images.json не работает)
+            const fallbackImages = [
+                { url: 'https://via.placeholder.com/300x200.png?text=Image+1', date: '2025-03-19T11:20:01Z' },
+                { url: 'https://via.placeholder.com/300x200.png?text=Image+2', date: '2025-03-19T11:25:01Z' },
+                { url: 'https://via.placeholder.com/300x200.png?text=Image+3', date: '2025-03-19T11:30:01Z' }
+            ];
+
+            let imageFiles = [];
             try {
                 const imagesJsonUrl = 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/images.json';
                 console.log('Попытка загрузки images.json с URL:', imagesJsonUrl);
@@ -783,76 +791,77 @@
                     throw new Error(`Не удалось загрузить images.json. Статус: ${response.status} ${response.statusText}`);
                 }
 
-                const imageFiles = await response.json();
+                imageFiles = await response.json();
                 console.log('Успешно загружен images.json:', imageFiles);
+            } catch (error) {
+                console.error('Ошибка загрузки images.json:', error);
+                console.log('Используем тестовые данные для галереи');
+                imageFiles = fallbackImages;
+            }
 
-                if (!imageFiles || imageFiles.length === 0) {
-                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
-                    return;
+            if (!imageFiles || imageFiles.length === 0) {
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
+                return;
+            }
+
+            const now = new Date();
+            const newThreshold = 365 * 24 * 60 * 60 * 1000; // 1 год в миллисекундах (для теста)
+
+            imageFiles.forEach((file, index) => {
+                const uploadDate = new Date(file.date);
+                const isValidDate = !isNaN(uploadDate.getTime());
+                const timeDiff = isValidDate ? now - uploadDate : Infinity;
+                const isNew = timeDiff <= newThreshold;
+
+                console.log(`Файл: ${file.url}, Дата: ${file.date}, Разница времени: ${timeDiff / 1000 / 60} минут, Новая: ${isNew}`);
+
+                let formattedDateTime = 'Неизвестная дата';
+                if (isValidDate) {
+                    if (typeof format === 'undefined') {
+                        console.error('date-fns не доступен, используем стандартное форматирование даты');
+                        formattedDateTime = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
+                                            uploadDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                    } else {
+                        const formattedDate = format(uploadDate, 'dd.MM.yyyy');
+                        const formattedTime = format(uploadDate, 'h:mm a');
+                        formattedDateTime = `${formattedDate}, ${formattedTime}`;
+                    }
+                } else {
+                    console.warn('Invalid date for file:', file.url, 'Date:', file.date);
                 }
 
-                const now = new Date();
-                const newThreshold = 365 * 24 * 60 * 60 * 1000; // 1 год в миллисекундах (для теста)
+                const div = document.createElement('div');
+                div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
+                div.style.animationDelay = `${index * 0.1}s`;
+                div.innerHTML = `
+                    <div class="date-strip">${formattedDateTime}</div>
+                    <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
+                    <div class="download-btn">
+                        <i class="ri-download-line"></i>
+                    </div>
+                `;
 
-                imageFiles.forEach((file, index) => {
-                    const uploadDate = new Date(file.date);
-                    const isValidDate = !isNaN(uploadDate.getTime());
-                    const timeDiff = isValidDate ? now - uploadDate : Infinity;
-                    const isNew = timeDiff <= newThreshold;
-
-                    console.log(`Файл: ${file.url}, Дата: ${file.date}, Разница времени: ${timeDiff / 1000 / 60} минут, Новая: ${isNew}`);
-
-                    let formattedDateTime = 'Неизвестная дата';
-                    if (isValidDate) {
-                        if (typeof format === 'undefined') {
-                            console.error('date-fns не доступен, используем стандартное форматирование даты');
-                            formattedDateTime = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
-                                                uploadDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-                        } else {
-                            const formattedDate = format(uploadDate, 'dd.MM.yyyy');
-                            const formattedTime = format(uploadDate, 'h:mm a');
-                            formattedDateTime = `${formattedDate}, ${formattedTime}`;
-                        }
-                    } else {
-                        console.warn('Invalid date for file:', file.url, 'Date:', file.date);
-                    }
-
-                    const div = document.createElement('div');
-                    div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
-                    div.style.animationDelay = `${index * 0.1}s`;
-                    div.innerHTML = `
-                        <div class="date-strip">${formattedDateTime}</div>
-                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
-                        <div class="download-btn">
-                            <i class="ri-download-line"></i>
-                        </div>
-                    `;
-
-                    div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file.url;
-                        modal.style.display = 'flex';
-                    });
-
-                    div.querySelector('.download-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const link = document.createElement('a');
-                        link.href = file.url;
-                        link.download = file.url.split('/').pop();
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    });
-
-                    galleryContainer.appendChild(div);
+                div.querySelector('img').addEventListener('click', () => {
+                    modalImage.src = file.url;
+                    modal.style.display = 'flex';
                 });
 
-                modal.addEventListener('click', () => {
-                    modal.style.display = 'none';
+                div.querySelector('.download-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const link = document.createElement('a');
+                    link.href = file.url;
+                    link.download = file.url.split('/').pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                 });
-            } catch (error) {
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки галереи: ' + error.message + '</p>';
-                console.error('Ошибка загрузки галереи:', error);
-            }
+
+                galleryContainer.appendChild(div);
+            });
+
+            modal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
         }
         loadGallery();
     </script>
