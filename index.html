@@ -135,6 +135,49 @@
         .discord-block img.logo { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; border-radius: 12px; border: 2px solid #A0A0A0; }
         .discord-block .server-name { margin-left: 100px; font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
         .discord-block .banner { width: 100%; height: 200px; object-fit: cover; margin-top: 20px; border-radius: 8px; }
+        .rules-block {
+            background: #2A2A2A;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .rules-block h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #A0A0A0;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .rules-block ul {
+            list-style: none;
+            padding: 0;
+        }
+        .rules-block li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #FFFFFF;
+        }
+        .rules-block li i {
+            margin-right: 8px;
+            color: #F23028;
+            font-size: 1.2rem;
+        }
+        .rules-block .highlight {
+            background: linear-gradient(45deg, #FF6BD6, #6B6BFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        .rules-block .note {
+            margin-top: 16px;
+            font-style: italic;
+            color: #A0A0A0;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="bg-pokki">
@@ -163,7 +206,7 @@
     <section id="home" class="min-h-screen flex items-center justify-center relative" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A);">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-bold mb-6">Добро пожаловать в Покки Ленд</h1>
-            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">кок</p>
+            <p class="text-xl mb-8 text-gray-400 max-w-2xl mx-auto">Кок</p>
             <a href="https://discord.gg/EbeQnuShft" target="_blank" class="inline-block bg-mystery text-accent px-8 py-3 rounded-lg hover-scale hover:bg-kotyara hover:text-pokki">Исследовать</a>
         </div>
     </section>
@@ -176,18 +219,32 @@
                 <div id="discord-server-name" class="server-name"></div>
                 <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
             </div>
+            <div class="rules-block mt-16">
+                <h3>Правила Покки Ленда</h3>
+                <ul>
+                    <li><i class="ri-error-warning-line"></i> Спам ради Спама <span class="highlight">Запрещён</span> *</li>
+                    <li><i class="ri-error-warning-line"></i> NSFW контент в основных чатах <span class="highlight">Запрещён</span> * *</li>
+                    <li><i class="ri-error-warning-line"></i> Политика (не в шуточном ключе) не приветствуется, наказание варьируется * *</li>
+                    <li><i class="ri-error-warning-line"></i> Оскорбления разрешены, до перехода на личности (ИРЛ) *</li>
+                    <li><i class="ri-error-warning-line"></i> Удаление сообщений для манипуляции какого-либо вида <span class="highlight">~~ПОККИ ВСЕ ВИДИТ, ПОККИ ВСЕ ЗНАЕТ~~</span> * *</li>
+                    <li><i class="ri-error-warning-line"></i> Не Спамьте пингами * *</li>
+                    <li><i class="ri-error-warning-line"></i> Копирование людей (их аватарок/поведения/ников) для манипуляции <span class="highlight">Запрещается</span> * * *</li>
+                    <li><i class="ri-error-warning-line"></i> Если ваше сообщение удалили, пусть оно остается удалённым *</li>
+                </ul>
+                <p class="mt-4">Если есть вопросы/уточнения, задавайте их Админу в онлайне либо же мне. Админ вправе отказать в доступе любому участнику. Он не обязан указывать причины или предупреждать об этом.</p>
+                <p class="note">Прикол в том, что правила их никто особо не читает, т.к. все придерживаются нормам морали.</p>
+            </div>
         </div>
     </section>
 
     <section id="kotyara" class="py-20 bg-pokki">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-16 text-kotyara">Музей Котяры</h2>
+            <h2 class="text-4xl font-bold mb-16 text-kotyara">Мяу` Музей для моих рисунков и мыслей, добро пожаловать</h2>
             <div class="max-w-2xl mx-auto bg-mystery/50 p-8 rounded-lg hover-scale">
                 <div class="flex justify-center mb-6">
                     <img id="kotyara-logo" class="w-16 h-16 rounded-lg" src="https://cdn4.cdn-telegram.org/file/rXiiX0PsfYoxwyPdnsax9pCuftEfU_yFyvOBDsMxdxoT8L0tvYNQB9qrRtv0_11jocVEZkubCDOdQWSt6bTInmfe7cqoqHPAbEoQDKXTNIGJ2mvlKvw0rEPMmQ2kZbZhTmZ4vzIWUwWs7A95AwtmRid6SE5iQBUx15JYWpGf2717PhERxsa0q91rayrkKIFwoBB6aOXb2CB-xYZ0Bo4O0f-6Wrh0UixUZ45JixDu347841bmdE2-dIppYV9BBXRy2mcKKT4c6K0heaTpSzb9-zyCM3k8p5whTJ4J2W3swSObZCN2tDhc7Luf07VvUORPNsc0KhoK7rHlrPNQUypwuQ.jpg" alt="Kotyara Logo">
                 </div>
-                <p class="text-xl mb-8 text-gray-400">Мяу`
-Музей для моих рисунков и мыслей, добро пожаловать</p>
+                <p class="text-xl mb-8 text-gray-400">Мяу` Музей для моих рисунков и мыслей, добро пожаловать</p>
                 <a href="https://t.me/Kottyaraq" target="_blank" class="fancy-button">Найти Котяру</a>
             </div>
         </div>
@@ -268,9 +325,11 @@
             const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
             try {
                 const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                if (!response.ok) {
+                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
+                }
                 const commits = await response.json();
                 if (commits && commits.length > 0) {
-                    // Самый старый коммит — это дата создания файла
                     const creationDate = commits[commits.length - 1].commit.committer.date;
                     return new Date(creationDate);
                 }
@@ -287,11 +346,19 @@
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
             const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
+
             try {
                 const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                if (!response.ok) {
+                    throw new Error(`HTTP ошибка: ${response.status} - ${response.statusText}`);
+                }
                 const files = await response.json();
 
-                if (!files || files.length === 0) {
+                if (!Array.isArray(files)) {
+                    throw new Error('Ответ API не является массивом. Возможно, репозиторий недоступен или пуст.');
+                }
+
+                if (files.length === 0) {
                     galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
                     return;
                 }
@@ -366,8 +433,8 @@
                     modal.style.display = 'none';
                 });
             } catch (error) {
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов</p>';
-                console.error('Ошибка:', error);
+                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Ошибка загрузки файлов: ${error.message}</p>`;
+                console.error('Детали ошибки:', error);
             }
         }
         loadGallery();
