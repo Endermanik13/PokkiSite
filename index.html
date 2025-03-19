@@ -173,7 +173,7 @@
             <h2 class="text-4xl font-bold mb-16">Загадка Покки</h2>
             <div id="discord-block" class="discord-block max-w-3xl mx-auto hover-scale">
                 <img id="discord-logo" class="logo" src="https://via.placeholder.com/80" alt="Discord Logo">
-                <div id="discord-server-name" class="server-name">Покки Ленд</div>
+                <div id="discord-server-name" class="server-name"></div>
                 <img id="discord-banner" class="banner" src="https://via.placeholder.com/600x200" alt="Discord Banner">
             </div>
         </div>
@@ -237,114 +237,137 @@
         }
         createParticles();
 
-        // Настройка блока Discord (статически)
-        function setupDiscordBlock() {
-            const discordBlock = document.getElementById('discord-block');
-            discordBlock.addEventListener('click', () => {
-                window.open('https://discord.gg/EbeQnuShft', '_blank');
-            });
-        }
-        setupDiscordBlock();
+        // Получение данных о Discord сервере
+        async function fetchDiscordData() {
+            const inviteCode = 'EbeQnuShft';
+            const apiUrl = `https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
 
-        // Извлечение даты из имени файла (формат: album-ГГГГ-ММ-ДД_ЧЧ-ММ-СС_1.gif)
-        function extractDateFromFilename(filename) {
-            const datePattern = /album-(\d{4})-(\d{2})-(\d{2})_/;
-            const match = filename.match(datePattern);
-            if (match) {
-                const date = new Date(`${match[1]}-${match[2]}-${match[3]}`);
-                if (!isNaN(date.getTime())) {
-                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    return date.toLocaleDateString('ru-RU', dateOptions);
-                }
+                const logoUrl = data.guild.icon ? `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png` : 'https://via.placeholder.com/80';
+                const bannerUrl = data.guild.banner ? `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.gif?size=600` : 'https://via.placeholder.com/600x200';
+                const serverName = data.guild.name || 'Покки Ленд';
+
+                document.getElementById('discord-logo').src = logoUrl;
+                document.getElementById('discord-server-name').textContent = serverName;
+                document.getElementById('discord-banner').src = bannerUrl;
+
+                document.getElementById('discord-block').addEventListener('click', () => {
+                    window.open('https://discord.gg/EbeQnuShft', '_blank');
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки данных Discord:', error);
             }
-            return 'Дата неизвестна';
+        }
+        fetchDiscordData();
+
+        // Получение даты создания файла через историю коммитов
+        async function getFileCreationDate(owner, repo, path) {
+            const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`;
+            try {
+                const response = await fetch(commitsUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                const commits = await response.json();
+                if (commits && commits.length > 0) {
+                    // Самый старый коммит — это дата создания файла
+                    const creationDate = commits[commits.length - 1].commit.committer.date;
+                    return new Date(creationDate);
+                }
+                return null;
+            } catch (error) {
+                console.error(`Ошибка получения даты для файла ${path}:`, error);
+                return null;
+            }
         }
 
-        // Динамическая загрузка GIF-ок через files.json
+        // Динамическая загрузка GIF-ок из корня main
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
-
-            // Запасной список файлов для локального тестирования (на случай, если files.json еще не создан)
-            const fallbackFiles = [
-                { name: "album-2024-10-1_9-19-02-30_1.gif", path: "album-2024-10-1_9-19-02-30_1.gif" },
-                { name: "album-2025-02-2_14-57-49_1.gif", path: "album-2025-02-2_14-57-49_1.gif" }
-            ];
-
-            let gifFiles = [];
-
+            const repoUrl = 'https://api.github.com/repos/Endermanik13/PokkiSite/contents/';
             try {
-                const response = await fetch('files.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка: ${response.status}`);
+                const response = await fetch(repoUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+                const files = await response.json();
+
+                if (!files || files.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">Файлы отсутствуют</p>';
+                    return;
                 }
-                gifFiles = await response.json();
+
+                const gifFiles = files.filter(file => file.name.endsWith('.gif') && file.name !== 'README.md');
+                if (gifFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
+                    return;
+                }
+
+                // Получение дат создания для каждого файла
+                const filesWithDates = await Promise.all(
+                    gifFiles.map(async (file) => {
+                        const createdAt = await getFileCreationDate('Endermanik13', 'PokkiSite', file.name);
+                        return { ...file, createdAt };
+                    })
+                );
+
+                // Сортировка по дате создания (от новых к старым)
+                filesWithDates.sort((a, b) => {
+                    if (!a.createdAt || !b.createdAt) return 0;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+
+                const now = new Date();
+                const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
+
+                filesWithDates.forEach((file, index) => {
+                    const createdAt = file.createdAt;
+                    const timeDiff = createdAt ? now - createdAt : Infinity;
+                    const isNew = timeDiff <= newThreshold;
+
+                    // Форматирование даты (день, месяц, год)
+                    let formattedDate = 'Дата неизвестна';
+                    if (createdAt && !isNaN(createdAt.getTime())) {
+                        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                        formattedDate = createdAt.toLocaleDateString('ru-RU', dateOptions);
+                    }
+
+                    const div = document.createElement('div');
+                    div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
+                    div.innerHTML = `
+                        <div class="date-strip">${formattedDate}</div>
+                        <img src="${file.download_url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
+                        <div class="download-btn">
+                            <i class="ri-download-line"></i>
+                        </div>
+                    `;
+
+                    // Открытие модального окна при клике на картинку
+                    div.querySelector('img').addEventListener('click', () => {
+                        modalImage.src = file.download_url;
+                        modal.style.display = 'flex';
+                    });
+
+                    // Скачивание при клике на кнопку
+                    div.querySelector('.download-btn').addEventListener('click', (e) => {
+                        e.stopPropagation(); // Предотвращаем открытие модального окна
+                        const link = document.createElement('a');
+                        link.href = file.download_url;
+                        link.download = file.name;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+
+                    galleryContainer.appendChild(div);
+                });
+
+                // Закрытие модального окна при клике на фон
+                modal.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
             } catch (error) {
-                console.error('Ошибка загрузки списка файлов:', error);
-                // Если files.json не удалось загрузить, используем запасной список
-                gifFiles = fallbackFiles;
-                galleryContainer.innerHTML = `<p class="text-center text-gray-400">Используется запасной список файлов (ошибка загрузки files.json: ${error.message})</p>`;
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки файлов</p>';
+                console.error('Ошибка:', error);
             }
-
-            if (gifFiles.length === 0) {
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">GIF-ки отсутствуют</p>';
-                return;
-            }
-
-            // Сортировка по имени файла (по дате в имени)
-            gifFiles.sort((a, b) => b.name.localeCompare(a.name));
-
-            const now = new Date();
-            const newThreshold = 15 * 60 * 1000; // 15 минут в миллисекундах
-
-            gifFiles.forEach((file, index) => {
-                // Извлечение даты из имени файла
-                const formattedDate = extractDateFromFilename(file.name);
-
-                // Для проверки "новых" GIF-ок
-                const fileDateMatch = file.name.match(/album-(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})/);
-                let isNew = false;
-                if (fileDateMatch) {
-                    const fileDate = new Date(`${fileDateMatch[1]}-${fileDateMatch[2]}-${fileDateMatch[3]}T${fileDateMatch[4]}:${fileDateMatch[5]}:${fileDateMatch[6]}`);
-                    const timeDiff = now - fileDate;
-                    isNew = timeDiff <= newThreshold;
-                }
-
-                const div = document.createElement('div');
-                div.className = `gallery-item relative rounded-lg overflow-hidden ${isNew ? 'new-gif' : ''}`;
-                div.innerHTML = `
-                    <div class="date-strip">${formattedDate}</div>
-                    <img src="${file.path}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Gartic ${index + 1}">
-                    <div class="download-btn">
-                        <i class="ri-download-line"></i>
-                    </div>
-                `;
-
-                // Открытие модального окна при клике на картинку
-                div.querySelector('img').addEventListener('click', () => {
-                    modalImage.src = file.path;
-                    modal.style.display = 'flex';
-                });
-
-                // Скачивание при клике на кнопку
-                div.querySelector('.download-btn').addEventListener('click', (e) => {
-                    e.stopPropagation(); // Предотвращаем открытие модального окна
-                    const link = document.createElement('a');
-                    link.href = file.path;
-                    link.download = file.name;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-
-                galleryContainer.appendChild(div);
-            });
-
-            // Закрытие модального окна при клике на фон
-            modal.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
         }
         loadGallery();
     </script>
