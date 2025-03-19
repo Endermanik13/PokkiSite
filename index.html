@@ -693,14 +693,17 @@
                     const timeDiff = isValidDate ? now - uploadDate : Infinity;
                     const isNew = timeDiff <= newThreshold;
 
-                    // Форматируем дату с помощью date-fns
-                    let formattedDate = 'Неизвестная дата';
+                    // Форматируем дату и время с помощью date-fns
+                    let formattedDateTime = 'Неизвестная дата';
                     if (isValidDate) {
                         if (typeof format === 'undefined') {
                             console.error('date-fns не доступен, используем стандартное форматирование даты');
-                            formattedDate = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                            formattedDateTime = uploadDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
+                                                uploadDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                         } else {
-                            formattedDate = format(uploadDate, 'dd.MM.yyyy');
+                            const formattedDate = format(uploadDate, 'dd.MM.yyyy');
+                            const formattedTime = format(uploadDate, 'h:mm a');
+                            formattedDateTime = `${formattedDate}, ${formattedTime}`;
                         }
                     } else {
                         console.warn('Invalid date for file:', file.url, 'Date:', file.date);
@@ -709,7 +712,7 @@
                     const div = document.createElement('div');
                     div.className = `gallery-item ${isNew && isValidDate ? 'new-gif' : ''}`;
                     div.innerHTML = `
-                        <div class="date-strip">${formattedDate}</div>
+                        <div class="date-strip">${formattedDateTime}</div>
                         <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                         <div class="download-btn">
                             <i class="ri-download-line"></i>
