@@ -663,32 +663,37 @@
                 }
 
                 const now = new Date();
-                const newThreshold = 15 * 24 * 60 * 60 * 1000; // 15 дней
+                const newThreshold = 15 * 24 * 60 * 60 * 1000; // 15 дней в миллисекундах
 
                 imageFiles.forEach((file, index) => {
-                    const isNew = index === 0; // Первый файл считаем новым
-                    const formattedDate = 'Дата добавления неизвестна'; // Без серверной логики даты недоступны
+                    const uploadDate = new Date(file.date);
+                    const timeDiff = now - uploadDate;
+                    const isNew = timeDiff <= newThreshold;
+
+                    // Форматируем дату для отображения
+                    const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    const formattedDate = uploadDate.toLocaleDateString('ru-RU', dateOptions);
 
                     const div = document.createElement('div');
                     div.className = `gallery-item ${isNew ? 'new-gif' : ''}`;
                     div.innerHTML = `
                         <div class="date-strip">${formattedDate}</div>
-                        <img src="${file}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
+                        <img src="${file.url}" class="w-full h-64 object-cover" style="margin-top: 24px;" alt="Image ${index + 1}">
                         <div class="download-btn">
                             <i class="ri-download-line"></i>
                         </div>
                     `;
 
                     div.querySelector('img').addEventListener('click', () => {
-                        modalImage.src = file;
+                        modalImage.src = file.url;
                         modal.style.display = 'flex';
                     });
 
                     div.querySelector('.download-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const link = document.createElement('a');
-                        link.href = file;
-                        link.download = file.split('/').pop();
+                        link.href = file.url;
+                        link.download = file.url.split('/').pop();
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
