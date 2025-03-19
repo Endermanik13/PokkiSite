@@ -468,7 +468,7 @@
 </head>
 <body class="bg-pokki">
     <div class="warning-message" id="warning-message">
-        Пожалуйста, не перезагружайте сайт слишком часто, он может сломаться!
+        Пожалуйста, не перезагружайте сайт слишком часто, он может сломаться! 🥺
         <span class="close-btn" onclick="document.getElementById('warning-message').style.display='none'">×</span>
     </div>
 
@@ -659,8 +659,17 @@
             const modalImage = document.getElementById('modal-image');
 
             try {
-                const response = await fetch('./images.json');
+                // Используем абсолютный URL для images.json
+                const imagesJsonUrl = 'https://raw.githubusercontent.com/Endermanik13/PokkiSite/main/images.json';
+                console.log('Попытка загрузки images.json с URL:', imagesJsonUrl);
+                const response = await fetch(imagesJsonUrl);
+
+                if (!response.ok) {
+                    throw new Error(`Не удалось загрузить images.json. Статус: ${response.status} ${response.statusText}`);
+                }
+
                 const imageFiles = await response.json();
+                console.log('Успешно загружен images.json:', imageFiles);
 
                 if (!imageFiles || imageFiles.length === 0) {
                     galleryContainer.innerHTML = '<p class="text-center text-gray-400">Изображения отсутствуют</p>';
@@ -717,7 +726,7 @@
                     modal.style.display = 'none';
                 });
             } catch (error) {
-                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки галереи. Проверьте наличие images.json</p>';
+                galleryContainer.innerHTML = '<p class="text-center text-gray-400">Ошибка загрузки галереи: ' + error.message + '</p>';
                 console.error('Ошибка загрузки галереи:', error);
             }
         }
